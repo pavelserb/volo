@@ -1,10 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { CheckCircle2, Gift, Sparkles } from 'lucide-react';
+import { getSkuById } from '@/data/mock';
+import { localizeSku } from '@/data/sku-locale';
+import { useI18n } from '@/i18n/context';
 
 export default function RedeemPage() {
+  const { locale, t } = useI18n();
+  const successSku = useMemo(() => {
+    const raw = getSkuById('heli-scenic-20');
+    return raw ? localizeSku(raw, locale) : null;
+  }, [locale]);
+
   const [code, setCode] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
@@ -25,17 +34,15 @@ export default function RedeemPage() {
             <Gift size={28} strokeWidth={2} />
           </div>
           <h1 className="font-heading text-3xl sm:text-4xl font-bold text-volo-text tracking-tight">
-            Aktywuj voucher podarunkowy
+            {t('redeem.title')}
           </h1>
-          <p className="mt-3 text-volo-muted leading-relaxed">
-            Wpisz kod z otrzymanego vouchera, aby przypisać przeżycie do konta.
-          </p>
+          <p className="mt-3 text-volo-muted leading-relaxed">{t('redeem.sub')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="card p-6 sm:p-8 space-y-5">
           <div className="space-y-2">
             <label htmlFor="code" className="text-sm font-medium text-volo-text">
-              Kod vouchera
+              {t('redeem.codeLabel')}
             </label>
             <input
               id="code"
@@ -47,18 +54,18 @@ export default function RedeemPage() {
                 setCode(e.target.value);
                 setSubmitted(false);
               }}
-              placeholder="np. VOLO-GIFT-XXXXX"
+              placeholder={t('redeem.codePlaceholder')}
               autoComplete="off"
               spellCheck={false}
             />
             {isInvalid && (
               <p className="text-sm text-volo-error flex items-center gap-1.5" role="alert">
-                Nieprawidłowy kod. Sprawdź literówki lub skontaktuj się z nami.
+                {t('redeem.invalid')}
               </p>
             )}
           </div>
           <button type="submit" className="btn-primary w-full">
-            Aktywuj
+            {t('redeem.submit')}
           </button>
         </form>
 
@@ -71,19 +78,17 @@ export default function RedeemPage() {
               <div className="min-w-0 flex-1">
                 <p className="text-xs font-semibold uppercase tracking-widest text-volo-accent mb-1 flex items-center gap-1">
                   <Sparkles size={12} />
-                  Sukces
+                  {t('redeem.success')}
                 </p>
                 <h2 className="font-heading text-xl font-bold text-volo-text">
-                  Lot widokowy nad Krakowem
+                  {successSku?.name ?? t('common.scenicFlight')}
                 </h2>
-                <p className="text-sm text-volo-muted mt-2 leading-relaxed">
-                  Voucher został aktywowany. Zarezerwuj dogodny termin lotu.
-                </p>
+                <p className="text-sm text-volo-muted mt-2 leading-relaxed">{t('redeem.activatedFor')}</p>
                 <Link
                   href="/book/heli-scenic-20"
                   className="btn-primary mt-6 inline-flex w-full sm:w-auto text-center justify-center"
                 >
-                  Zarezerwuj termin
+                  {t('redeem.bookSlot')}
                 </Link>
               </div>
             </div>

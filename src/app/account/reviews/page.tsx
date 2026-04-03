@@ -1,25 +1,23 @@
+'use client';
+
 import { MessageSquareQuote } from 'lucide-react';
+import { useI18n } from '@/i18n/context';
 
 export default function AccountReviewsPage() {
+  const { t } = useI18n();
+
   return (
     <div>
       <header className="mb-10">
-        <h1 className="font-heading text-3xl font-bold text-volo-text tracking-tight">Opinie</h1>
-        <p className="text-volo-muted mt-2 max-w-xl leading-relaxed">
-          Podziel się wrażeniami po locie — pomożesz innym wybrać przeżycie.
-        </p>
+        <h1 className="font-heading text-3xl font-bold text-volo-text tracking-tight">{t('account.reviewsTitle')}</h1>
+        <p className="text-volo-muted mt-2 max-w-xl leading-relaxed">{t('account.reviewsSub')}</p>
       </header>
 
       <div className="card border-volo-border overflow-hidden">
         <div className="grid sm:grid-cols-[1fr_200px] gap-0">
           <div className="p-8 sm:p-10 flex flex-col justify-center">
-            <p className="text-volo-text text-lg leading-relaxed font-medium">
-              Opinie pojawią się po zrealizowanych rezerwacjach.
-            </p>
-            <p className="text-volo-muted text-sm mt-4 leading-relaxed max-w-md">
-              Gdy zakończysz lot lub transfer, wyślemy Ci zaproszenie do krótkiej oceny — wtedy w tej sekcji zobaczysz
-              historię swoich opinii.
-            </p>
+            <p className="text-volo-text text-lg leading-relaxed font-medium">{t('account.reviewsEmpty')}</p>
+            <p className="text-volo-muted text-sm mt-4 leading-relaxed max-w-md">{t('account.reviewsEmptySub')}</p>
           </div>
           <div
             className="relative min-h-[180px] sm:min-h-0 bg-gradient-to-br from-volo-accent-light via-volo-bg to-volo-surface border-t sm:border-t-0 sm:border-l border-volo-border flex items-center justify-center p-8"

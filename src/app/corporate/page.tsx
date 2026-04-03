@@ -3,113 +3,114 @@
 import { Building2, Crown, PartyPopper, Users } from 'lucide-react';
 import { Hero } from '@/components/Hero';
 import { SectionHeading } from '@/components/SectionHeading';
-
-const features = [
-  {
-    title: 'Team building',
-    text: 'Loty widokowe i wyjazdy integracyjne z logistyką od drzwi do drzwi — bezpiecznie, z klasą i z pamiątką na lata.',
-    icon: Users,
-  },
-  {
-    title: 'Nagrody dla pracowników',
-    text: 'Vouchery na przeżycia zamiast standardowych bonusów. Personalizacja, faktura zbiorcza i elastyczne terminy.',
-    icon: PartyPopper,
-  },
-  {
-    title: 'Eventy VIP',
-    text: 'Transfery premium, powitania na lotnisku i loty helikopterem dla gości specjalnych — dopasujemy scenariusz do marki.',
-    icon: Crown,
-  },
-] as const;
+import { useI18n } from '@/i18n/context';
 
 export default function CorporatePage() {
+  const { t } = useI18n();
+
+  const features = [
+    { titleKey: 'corporate.f1Title' as const, textKey: 'corporate.f1Text' as const, icon: Users },
+    { titleKey: 'corporate.f2Title' as const, textKey: 'corporate.f2Text' as const, icon: PartyPopper },
+    { titleKey: 'corporate.f3Title' as const, textKey: 'corporate.f3Text' as const, icon: Crown },
+  ] as const;
+
   return (
     <>
-      {/* Hero */}
       <Hero
         image="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&h=900&fit=crop"
-        alt="Widok z helikoptera na panoramę"
+        alt={t('corporate.heroAlt')}
         overlay="center"
         minHeight="min-h-[400px] lg:min-h-[480px]"
       >
         <div className="text-center max-w-3xl mx-auto">
           <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-white">
             <Building2 size={14} />
-            B2B
+            {t('corporate.b2b')}
           </p>
           <h1 className="text-4xl sm:text-5xl font-heading font-bold tracking-tight text-white leading-tight">
-            Volo dla firm
+            {t('corporate.title')}
           </h1>
           <p className="mt-6 text-lg leading-relaxed text-white/85 sm:text-xl max-w-2xl mx-auto">
-            Team building w chmurach, nagrody dla zespołu i eventy VIP z transferami
-            oraz lotami helikopterem w Krakowie.
+            {t('corporate.sub')}
           </p>
         </div>
       </Hero>
 
-      {/* Features */}
       <section className="section-padding py-16 sm:py-20 lg:py-24 bg-volo-surface border-b border-volo-border">
         <div className="container-wide mx-auto">
           <div className="grid gap-6 md:grid-cols-3 lg:gap-8">
-            {features.map(({ title, text, icon: Icon }) => (
-              <article key={title} className="card-elevated p-6 sm:p-8 flex flex-col h-full">
+            {features.map(({ titleKey, textKey, icon: Icon }) => (
+              <article key={titleKey} className="card-elevated p-6 sm:p-8 flex flex-col h-full">
                 <span className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-volo-accent-light text-volo-accent">
                   <Icon size={24} strokeWidth={2} />
                 </span>
-                <h2 className="font-heading text-xl font-bold text-volo-text mb-3">{title}</h2>
-                <p className="text-sm sm:text-base text-volo-muted leading-relaxed flex-1">{text}</p>
+                <h2 className="font-heading text-xl font-bold text-volo-text mb-3">{t(titleKey)}</h2>
+                <p className="text-sm sm:text-base text-volo-muted leading-relaxed flex-1">{t(textKey)}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Contact form */}
       <section className="section-padding py-16 sm:py-20 lg:py-24 bg-volo-bg">
         <div className="container-narrow mx-auto max-w-2xl">
           <SectionHeading
-            title="Zapytanie ofertowe"
-            subtitle="Wypełnij formularz — odezwiemy się z propozycją w ciągu 1–2 dni roboczych (formularz demonstracyjny)."
+            title={t('corporate.formTitle')}
+            subtitle={t('corporate.formSub')}
             align="center"
           />
           <form className="card-elevated p-6 sm:p-8 space-y-5 mt-10" onSubmit={(e) => e.preventDefault()}>
             <div className="grid sm:grid-cols-2 gap-5">
               <div className="space-y-2 sm:col-span-2">
-                <label htmlFor="company" className="text-sm font-medium text-volo-text">Nazwa firmy</label>
-                <input id="company" className="input" placeholder="np. Acme Sp. z o.o." />
+                <label htmlFor="company" className="text-sm font-medium text-volo-text">
+                  {t('corporate.company')}
+                </label>
+                <input id="company" className="input" placeholder={t('corporate.companyPh')} />
               </div>
               <div className="space-y-2">
-                <label htmlFor="person" className="text-sm font-medium text-volo-text">Osoba kontaktowa</label>
-                <input id="person" className="input" placeholder="Imię i nazwisko" />
+                <label htmlFor="person" className="text-sm font-medium text-volo-text">
+                  {t('corporate.contactPerson')}
+                </label>
+                <input id="person" className="input" placeholder={t('corporate.contactPh')} />
               </div>
               <div className="space-y-2">
-                <label htmlFor="cemail" className="text-sm font-medium text-volo-text">E-mail służbowy</label>
-                <input id="cemail" type="email" className="input" placeholder="kontakt@firma.pl" />
+                <label htmlFor="cemail" className="text-sm font-medium text-volo-text">
+                  {t('corporate.workEmail')}
+                </label>
+                <input id="cemail" type="email" className="input" placeholder={t('corporate.workEmailPh')} />
               </div>
               <div className="space-y-2">
-                <label htmlFor="cphone" className="text-sm font-medium text-volo-text">Telefon</label>
-                <input id="cphone" type="tel" className="input" placeholder="+48 …" />
+                <label htmlFor="cphone" className="text-sm font-medium text-volo-text">
+                  {t('corporate.phone')}
+                </label>
+                <input id="cphone" type="tel" className="input" placeholder={t('corporate.phonePh')} />
               </div>
               <div className="space-y-2">
-                <label htmlFor="etype" className="text-sm font-medium text-volo-text">Typ wydarzenia</label>
+                <label htmlFor="etype" className="text-sm font-medium text-volo-text">
+                  {t('corporate.eventType')}
+                </label>
                 <select id="etype" className="input">
-                  <option>Team building / integracja</option>
-                  <option>Nagrody / vouchery</option>
-                  <option>Event VIP / goście specjalni</option>
-                  <option>Inne</option>
+                  <option>{t('corporate.eventTeam')}</option>
+                  <option>{t('corporate.eventRewards')}</option>
+                  <option>{t('corporate.eventVip')}</option>
+                  <option>{t('corporate.eventOther')}</option>
                 </select>
               </div>
               <div className="space-y-2 sm:col-span-2">
-                <label htmlFor="participants" className="text-sm font-medium text-volo-text">Szacowana liczba uczestników</label>
-                <input id="participants" type="number" min={1} className="input" placeholder="np. 12" />
+                <label htmlFor="participants" className="text-sm font-medium text-volo-text">
+                  {t('corporate.participants')}
+                </label>
+                <input id="participants" type="number" min={1} className="input" placeholder={t('corporate.participantsPh')} />
               </div>
               <div className="space-y-2 sm:col-span-2">
-                <label htmlFor="cmsg" className="text-sm font-medium text-volo-text">Wiadomość</label>
-                <textarea id="cmsg" className="input min-h-[120px] resize-y" placeholder="Opisz potrzeby, termin, budżet…" />
+                <label htmlFor="cmsg" className="text-sm font-medium text-volo-text">
+                  {t('corporate.message')}
+                </label>
+                <textarea id="cmsg" className="input min-h-[120px] resize-y" placeholder={t('corporate.messagePh')} />
               </div>
             </div>
             <button type="button" className="btn-primary w-full sm:w-auto">
-              Wyślij zapytanie
+              {t('corporate.send')}
             </button>
           </form>
         </div>

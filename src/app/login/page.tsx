@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Mail } from 'lucide-react';
+import { useI18n } from '@/i18n/context';
 
 function GoogleMark({ className }: { className?: string }) {
   return (
@@ -30,6 +31,7 @@ function GoogleMark({ className }: { className?: string }) {
 
 export default function LoginPage() {
   const router = useRouter();
+  const { t } = useI18n();
   const [email, setEmail] = useState('');
   const [linkSent, setLinkSent] = useState(false);
 
@@ -46,22 +48,24 @@ export default function LoginPage() {
   return (
     <div className="section-padding py-14 sm:py-20 lg:py-24">
       <div className="container-narrow mx-auto max-w-md">
-        <h1 className="font-heading text-3xl font-bold text-volo-text text-center mb-2">
-          Zaloguj się
-        </h1>
-        <p className="text-center text-volo-muted text-sm mb-10 leading-relaxed">
-          Jedno konto — rezerwacje, vouchery i ustawienia w jednym miejscu.
-        </p>
+        <h1 className="font-heading text-3xl font-bold text-volo-text text-center mb-2">{t('login.title')}</h1>
+        <p className="text-center text-volo-muted text-sm mb-10 leading-relaxed">{t('login.sub')}</p>
 
         <div className="card p-6 sm:p-8 space-y-6">
-          <button type="button" className="btn-secondary w-full gap-2 border-volo-border" onClick={handleGoogle}>
+          <button
+            type="button"
+            className="btn-secondary w-full gap-2 border-volo-border"
+            onClick={handleGoogle}
+          >
             <GoogleMark />
-            Kontynuuj z Google
+            {t('login.google')}
           </button>
 
           <div className="relative flex items-center gap-4 py-1">
             <span className="h-px flex-1 bg-volo-border" aria-hidden />
-            <span className="text-xs font-medium uppercase tracking-wider text-volo-muted shrink-0">lub</span>
+            <span className="text-xs font-medium uppercase tracking-wider text-volo-muted shrink-0">
+              {t('login.or')}
+            </span>
             <span className="h-px flex-1 bg-volo-border" aria-hidden />
           </div>
 
@@ -69,7 +73,7 @@ export default function LoginPage() {
             <form onSubmit={handleMagicLink} className="space-y-4">
               <div className="space-y-2">
                 <label htmlFor="email" className="text-sm font-medium text-volo-text">
-                  E-mail
+                  {t('login.emailLabel')}
                 </label>
                 <input
                   id="email"
@@ -77,14 +81,14 @@ export default function LoginPage() {
                   className="input"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="twoj@email.pl"
+                  placeholder={t('login.emailPlaceholder')}
                   autoComplete="email"
                   required
                 />
               </div>
               <button type="submit" className="btn-primary w-full gap-2">
                 <Mail size={18} />
-                Wyślij link do logowania
+                {t('login.magic')}
               </button>
             </form>
           ) : (
@@ -92,18 +96,18 @@ export default function LoginPage() {
               className="rounded-xl border border-volo-accent/30 bg-volo-accent-light px-4 py-4 text-sm text-volo-text leading-relaxed"
               role="status"
             >
-              Link wysłany na <span className="font-semibold">{email}</span>! Sprawdź swoją skrzynkę.
+              {t('login.sent', { email })}
             </div>
           )}
         </div>
 
         <p className="mt-8 text-center text-xs text-volo-muted leading-relaxed max-w-sm mx-auto">
-          Nie masz konta? Utworzymy je automatycznie przy pierwszej rezerwacji.
+          {t('login.hint')}
         </p>
 
         <p className="mt-6 text-center">
           <Link href="/" className="btn-ghost text-sm">
-            Wróć na stronę główną
+            {t('login.backHome')}
           </Link>
         </p>
       </div>

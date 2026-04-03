@@ -37,6 +37,7 @@ type I18nContextValue = {
   setLocale: (locale: Locale) => void;
   t: (key: string, vars?: Record<string, string>) => string;
   formatNumber: (n: number) => string;
+  formatDecimal: (n: number, fractionDigits?: number) => string;
   formatCurrency: (n: number, currency?: string) => string;
   formatDate: (isoDate: string, options?: Intl.DateTimeFormatOptions) => string;
 };
@@ -89,6 +90,12 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     const formatNumber = (n: number) =>
       new Intl.NumberFormat(numberLocale).format(n);
 
+    const formatDecimal = (n: number, fractionDigits = 1) =>
+      new Intl.NumberFormat(numberLocale, {
+        minimumFractionDigits: fractionDigits,
+        maximumFractionDigits: fractionDigits,
+      }).format(n);
+
     const formatCurrency = (n: number, currency = 'PLN') =>
       new Intl.NumberFormat(numberLocale, {
         style: 'currency',
@@ -105,7 +112,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
       }).format(new Date(y, m - 1, d));
     };
 
-    return { locale, setLocale, t, formatNumber, formatCurrency, formatDate };
+    return { locale, setLocale, t, formatNumber, formatDecimal, formatCurrency, formatDate };
   }, [locale, setLocale]);
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;

@@ -1,6 +1,7 @@
 'use client';
 
 import { Check, Plus } from 'lucide-react';
+import { useI18n } from '@/i18n/context';
 
 interface AddonCardProps {
   name: string;
@@ -10,10 +11,9 @@ interface AddonCardProps {
   onToggle: () => void;
 }
 
-const formatPrice = (amount: number) =>
-  new Intl.NumberFormat('pl-PL').format(amount);
-
 export function AddonCard({ name, description, price, selected, onToggle }: AddonCardProps) {
+  const { formatNumber, t } = useI18n();
+
   return (
     <button
       onClick={onToggle}
@@ -33,7 +33,7 @@ export function AddonCard({ name, description, price, selected, onToggle }: Addo
         </div>
         <div className="flex items-center gap-3 flex-shrink-0">
           <span className="text-sm font-bold text-volo-text">
-            {price === 0 ? 'Gratis' : `+${formatPrice(price)} PLN`}
+            {price === 0 ? t('booking.freeAddon') : `+${formatNumber(price)} PLN`}
           </span>
           <div
             className={`

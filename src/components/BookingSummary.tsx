@@ -1,5 +1,8 @@
+'use client';
+
 import Image from 'next/image';
 import { Clock, Users, Calendar, MapPin } from 'lucide-react';
+import { useI18n } from '@/i18n/context';
 
 interface BookingSummaryProps {
   image: string;
@@ -13,12 +16,10 @@ interface BookingSummaryProps {
   basePrice: number;
   addonsTotal?: number;
   totalPrice: number;
-  priceLabel: string;
+  /** Kept for callers; summary shows PLN totals */
+  priceLabel?: string;
   isBuyout?: boolean;
 }
-
-const formatPrice = (amount: number) =>
-  new Intl.NumberFormat('pl-PL').format(amount);
 
 export function BookingSummary({
   image,
@@ -32,9 +33,17 @@ export function BookingSummary({
   basePrice,
   addonsTotal = 0,
   totalPrice,
-  priceLabel,
   isBuyout,
 }: BookingSummaryProps) {
+  const { formatNumber, t } = useI18n();
+
+  const guestLine =
+    guests != null && guestUnit
+      ? isBuyout
+        ? t('booking.privateGuests', { guests: String(guests), guestUnit })
+        : `${guests} ${guestUnit}`
+      : null;
+
   return (
     <div className="card-elevated overflow-hidden">
       <div className="relative h-48 w-full">
@@ -60,38 +69,41 @@ export function BookingSummary({
           {date && (
             <div className="flex items-center gap-2 text-volo-text">
               <Calendar size={16} className="text-volo-muted" />
-              <span>{date}{time ? `, ${time}` : ''}</span>
+              <span>
+                {date}
+                {time ? `, ${time}` : ''}
+              </span>
             </div>
           )}
-          {guests && guestUnit && (
+          {guestLine && (
             <div className="flex items-center gap-2 text-volo-text">
               <Users size={16} className="text-volo-muted" />
-              <span>
-                {isBuyout ? `Prywatny (do ${guests} ${guestUnit})` : `${guests} ${guestUnit}`}
-              </span>
+              <span>{guestLine}</span>
             </div>
           )}
           <div className="flex items-center gap-2 text-volo-text">
             <Clock size={16} className="text-volo-muted" />
-            <span>{durationMinutes} min</span>
+            <span>
+              {durationMinutes} {t('common.min')}
+            </span>
           </div>
         </div>
 
         <div className="border-t border-volo-border pt-4 space-y-2">
           <div className="flex justify-between text-sm">
-            <span className="text-volo-muted">Usługa</span>
-            <span className="text-volo-text">{formatPrice(basePrice)} PLN</span>
+            <span className="text-volo-muted">{t('booking.summaryService')}</span>
+            <span className="text-volo-text">{formatNumber(basePrice)} PLN</span>
           </div>
           {addonsTotal > 0 && (
             <div className="flex justify-between text-sm">
-              <span className="text-volo-muted">Dodatki</span>
-              <span className="text-volo-text">+{formatPrice(addonsTotal)} PLN</span>
+              <span className="text-volo-muted">{t('booking.summaryAddons')}</span>
+              <span className="text-volo-text">+{formatNumber(addonsTotal)} PLN</span>
             </div>
           )}
           <div className="flex justify-between pt-2 border-t border-dashed border-volo-border">
-            <span className="font-semibold text-volo-text">Razem</span>
+            <span className="font-semibold text-volo-text">{t('booking.summaryTotal')}</span>
             <div className="text-right">
-              <span className="text-price-lg">{formatPrice(totalPrice)}</span>
+              <span className="text-price-lg">{formatNumber(totalPrice)}</span>
               <span className="text-price-unit">PLN</span>
             </div>
           </div>

@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { getSkuById, getSlotsForSku, type Slot } from '@/data/mock';
+import { localizeSku } from '@/data/sku-locale';
 import { ChevronLeft, CheckCircle, Shield, CalendarCheck, Clock } from 'lucide-react';
 import { StepIndicator } from '@/components/StepIndicator';
 import { SlotButton } from '@/components/SlotButton';
@@ -11,16 +12,19 @@ import { GuestStepper } from '@/components/GuestStepper';
 import { AddonCard } from '@/components/AddonCard';
 import { BookingSummary } from '@/components/BookingSummary';
 import { TrustBar } from '@/components/TrustBar';
-
-const STEP_LABELS = ['Data i czas', 'Szczegóły', 'Płatność', 'Potwierdzenie'];
-
-const formatPrice = (amount: number) =>
-  new Intl.NumberFormat('pl-PL').format(amount);
+import { useI18n } from '@/i18n/context';
 
 export default function BookingPage() {
   const { skuId } = useParams<{ skuId: string }>();
-  const sku = getSkuById(skuId);
+  const { locale, t, formatNumber, formatDate } = useI18n();
+  const rawSku = getSkuById(skuId);
+  const sku = useMemo(
+    () => (rawSku ? localizeSku(rawSku, locale) : null),
+    [rawSku, locale],
+  );
   const allSlots = useMemo(() => (sku ? getSlotsForSku(sku.id) : []), [sku]);
+
+  const stepLabels = useMemo(() => t('booking.steps').split('|'), [t]);
 
   const [step, setStep] = useState(0);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -31,11 +35,15 @@ export default function BookingPage() {
   const [contact, setContact] = useState({ name: '', email: '', phone: '' });
   const [consent, setConsent] = useState(false);
 
+  const numberLocale = locale === 'pl' ? 'pl-PL' : 'en-GB';
+
   if (!sku) {
     return (
       <div className="container-narrow section-padding py-20 text-center">
-        <h1 className="text-2xl font-heading font-bold mb-4">Nie znaleziono oferty</h1>
-        <Link href="/" className="btn-primary">Strona główna</Link>
+        <h1 className="text-2xl font-heading font-bold mb-4">{t('booking.notFound')}</h1>
+        <Link href="/" className="btn-primary">
+          {t('booking.homeLink')}
+        </Link>
       </div>
     );
   }
@@ -72,11 +80,11 @@ export default function BookingPage() {
   const canProceedStep0 = selectedDate && selectedSlot;
   const canProceedStep2 = contact.name && contact.email && contact.phone && consent;
 
-  const formatDate = (d: string) => {
+  const formatDayChip = (d: string) => {
     const date = new Date(d + 'T00:00:00');
-    const day = date.toLocaleDateString('pl-PL', { weekday: 'short' });
+    const day = date.toLocaleDateString(numberLocale, { weekday: 'short' });
     const num = date.getDate();
-    const month = date.toLocaleDateString('pl-PL', { month: 'short' });
+    const month = date.toLocaleDateString(numberLocale, { month: 'short' });
     return { day, num, month };
   };
 
@@ -85,33 +93,50 @@ export default function BookingPage() {
     [],
   );
 
+  const guestUnitLabel = t('booking.guestUnit');
+  const summaryGuestUnit = isShared ? guestUnitLabel : undefined;
+
+  const consentBlock = (
+    <span className="text-sm text-volo-muted">
+      {t('booking.consentLead')}
+      <Link href="/legal/terms" className="underline text-volo-accent">
+        {t('booking.terms')}
+      </Link>
+      {t('booking.consentBetween')}
+      <Link href="/legal/privacy" className="underline text-volo-accent">
+        {t('booking.privacy')}
+      </Link>
+      {t('booking.consentEnd')}
+    </span>
+  );
+
   return (
     <div className="container-narrow section-padding py-8">
-      {/* Step indicator */}
       {step < 3 && (
         <div className="mb-10">
-          <StepIndicator steps={STEP_LABELS} currentStep={step} />
+          <StepIndicator steps={stepLabels} currentStep={step} />
         </div>
       )}
 
       <div className="lg:grid lg:grid-cols-[1fr_380px] lg:gap-10">
-        {/* Main form area */}
         <div>
-          {/* Step 0 — Date & time */}
           {step === 0 && (
             <div>
-              <h2 className="text-xl font-heading font-bold mb-1">Wybierz datę i godzinę</h2>
+              <h2 className="text-xl font-heading font-bold mb-1">{t('booking.step0Title')}</h2>
               <p className="text-sm text-volo-muted mb-6">{sku.name}</p>
 
-              {/* Date chips */}
               <div className="flex gap-2 overflow-x-auto pb-3 mb-6 snap-x snap-mandatory">
                 {dates.map((d) => {
-                  const { day, num, month } = formatDate(d);
+                  const { day, num, month } = formatDayChip(d);
                   const active = d === selectedDate;
                   return (
                     <button
                       key={d}
-                      onClick={() => { setSelectedDate(d); setSelectedSlot(null); }}
+                      type="button"
+                      onClick={() => {
+                        setSelectedDate(d);
+                        setSelectedSlot(null);
+                      }}
                       className={`snap-start shrink-0 flex flex-col items-center px-4 py-3 rounded-xl border-2 transition-all duration-200 ${
                         active
                           ? 'border-volo-accent bg-volo-accent-light text-volo-accent font-semibold'
@@ -126,10 +151,9 @@ export default function BookingPage() {
                 })}
               </div>
 
-              {/* Slot grid */}
               {selectedDate && (
                 <div>
-                  <h3 className="text-sm font-semibold mb-3">Dostępne godziny</h3>
+                  <h3 className="text-sm font-semibold mb-3">{t('booking.availableTimes')}</h3>
                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
                     {slotsForDate.map((slot) => (
                       <SlotButton
@@ -138,7 +162,11 @@ export default function BookingPage() {
                         remaining={slot.remaining}
                         total={slot.total}
                         selected={selectedSlot?.id === slot.id}
-                        onClick={() => { setSelectedSlot(slot); setGuests(1); setIsBuyout(false); }}
+                        onClick={() => {
+                          setSelectedSlot(slot);
+                          setGuests(1);
+                          setIsBuyout(false);
+                        }}
                       />
                     ))}
                   </div>
@@ -146,30 +174,36 @@ export default function BookingPage() {
               )}
 
               <div className="mt-8 flex justify-end">
-                <button className="btn-primary" disabled={!canProceedStep0} onClick={() => setStep(1)}>
-                  Dalej
+                <button
+                  type="button"
+                  className="btn-primary"
+                  disabled={!canProceedStep0}
+                  onClick={() => setStep(1)}
+                >
+                  {t('booking.next')}
                 </button>
               </div>
             </div>
           )}
 
-          {/* Step 1 — Details */}
           {step === 1 && (
             <div>
-              <button onClick={() => setStep(0)} className="btn-ghost text-sm mb-4 -ml-2">
-                <ChevronLeft size={16} /> Zmień datę
+              <button type="button" onClick={() => setStep(0)} className="btn-ghost text-sm mb-4 -ml-2">
+                <ChevronLeft size={16} /> {t('booking.backDate')}
               </button>
-              <h2 className="text-xl font-heading font-bold mb-1">Szczegóły rezerwacji</h2>
-              <p className="text-sm text-volo-muted mb-6">{selectedDate} · {selectedSlot?.time}</p>
+              <h2 className="text-xl font-heading font-bold mb-1">{t('booking.step1Title')}</h2>
+              <p className="text-sm text-volo-muted mb-6">
+                {selectedDate ? formatDate(selectedDate, { day: 'numeric', month: 'long', year: 'numeric' }) : ''}{' '}
+                · {selectedSlot?.time}
+              </p>
 
-              {/* Guest stepper */}
               {isShared && (
                 <div className="card p-5 mb-6">
                   <GuestStepper
                     value={guests}
                     min={1}
                     max={maxGuests}
-                    unit={sku.capacityUnit === 'miejsce' ? 'osób' : sku.capacityUnit}
+                    unit={guestUnitLabel}
                     onChange={setGuests}
                     buyoutAvailable={!!hasBuyout}
                     buyoutPrice={sku.buyoutPrice}
@@ -185,15 +219,17 @@ export default function BookingPage() {
               {!isShared && (
                 <div className="card p-5 mb-6">
                   <p className="text-sm text-volo-muted">
-                    Usługa obejmuje do {sku.capacityTotal} pasażerów — cena za {sku.capacityUnit}.
+                    {t('booking.exclusiveInfo', {
+                      total: String(sku.capacityTotal),
+                      unit: sku.priceLabel,
+                    })}
                   </p>
                 </div>
               )}
 
-              {/* Addons */}
               {sku.addons.length > 0 && (
                 <div className="mt-6">
-                  <h3 className="text-sm font-semibold mb-3">Dodatki</h3>
+                  <h3 className="text-sm font-semibold mb-3">{t('booking.addons')}</h3>
                   <div className="space-y-3">
                     {sku.addons.map((addon) => (
                       <AddonCard
@@ -210,31 +246,32 @@ export default function BookingPage() {
               )}
 
               <div className="mt-8 flex justify-end">
-                <button className="btn-primary" onClick={() => setStep(2)}>Dalej</button>
+                <button type="button" className="btn-primary" onClick={() => setStep(2)}>
+                  {t('booking.next')}
+                </button>
               </div>
             </div>
           )}
 
-          {/* Step 2 — Payment */}
           {step === 2 && (
             <div>
-              <button onClick={() => setStep(1)} className="btn-ghost text-sm mb-4 -ml-2">
-                <ChevronLeft size={16} /> Wróć
+              <button type="button" onClick={() => setStep(1)} className="btn-ghost text-sm mb-4 -ml-2">
+                <ChevronLeft size={16} /> {t('booking.back')}
               </button>
-              <h2 className="text-xl font-heading font-bold mb-6">Dane kontaktowe i płatność</h2>
+              <h2 className="text-xl font-heading font-bold mb-6">{t('booking.step2Title')}</h2>
 
               <div className="space-y-4 mb-8">
                 <div>
-                  <label className="text-sm font-medium mb-1.5 block">Imię i nazwisko</label>
+                  <label className="text-sm font-medium mb-1.5 block">{t('booking.fullName')}</label>
                   <input
                     className="input"
-                    placeholder="Jan Kowalski"
+                    placeholder={locale === 'pl' ? 'Jan Kowalski' : 'Jane Doe'}
                     value={contact.name}
                     onChange={(e) => setContact({ ...contact, name: e.target.value })}
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-1.5 block">Email</label>
+                  <label className="text-sm font-medium mb-1.5 block">{t('booking.email')}</label>
                   <input
                     className="input"
                     type="email"
@@ -244,11 +281,11 @@ export default function BookingPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-1.5 block">Telefon</label>
+                  <label className="text-sm font-medium mb-1.5 block">{t('booking.phone')}</label>
                   <input
                     className="input"
                     type="tel"
-                    placeholder="+48 600 000 000"
+                    placeholder={locale === 'pl' ? '+48 600 000 000' : '+44 7700 900000'}
                     value={contact.phone}
                     onChange={(e) => setContact({ ...contact, phone: e.target.value })}
                   />
@@ -256,15 +293,15 @@ export default function BookingPage() {
               </div>
 
               <div className="card p-5 mb-6">
-                <h3 className="text-sm font-semibold mb-3">Płatność</h3>
+                <h3 className="text-sm font-semibold mb-3">{t('booking.payment')}</h3>
                 <div className="space-y-3">
-                  <input className="input bg-volo-bg text-volo-muted" disabled value="4242 4242 4242 4242" />
+                  <input className="input bg-volo-bg text-volo-muted" disabled value="4242 4242 4242 4242" readOnly />
                   <div className="grid grid-cols-2 gap-3">
-                    <input className="input bg-volo-bg text-volo-muted" disabled value="12/28" />
-                    <input className="input bg-volo-bg text-volo-muted" disabled value="123" />
+                    <input className="input bg-volo-bg text-volo-muted" disabled value="12/28" readOnly />
+                    <input className="input bg-volo-bg text-volo-muted" disabled value="123" readOnly />
                   </div>
                 </div>
-                <p className="text-xs text-volo-muted mt-2">Demo — płatność nie jest przetwarzana</p>
+                <p className="text-xs text-volo-muted mt-2">{t('booking.paymentDemo')}</p>
               </div>
 
               <label className="flex items-start gap-3 mb-8 cursor-pointer">
@@ -274,20 +311,16 @@ export default function BookingPage() {
                   onChange={(e) => setConsent(e.target.checked)}
                   className="mt-0.5 w-5 h-5 accent-volo-accent"
                 />
-                <span className="text-sm text-volo-muted">
-                  Akceptuję{' '}
-                  <Link href="/legal/terms" className="underline text-volo-accent">regulamin</Link>
-                  {' '}i{' '}
-                  <Link href="/legal/privacy" className="underline text-volo-accent">politykę prywatności</Link>
-                </span>
+                {consentBlock}
               </label>
 
               <button
+                type="button"
                 className="btn-primary w-full text-lg py-4"
                 disabled={!canProceedStep2}
                 onClick={() => setStep(3)}
               >
-                Zapłać {formatPrice(total)} PLN
+                {t('booking.pay', { amount: formatNumber(total) })}
               </button>
               <div className="mt-3">
                 <TrustBar />
@@ -295,61 +328,73 @@ export default function BookingPage() {
             </div>
           )}
 
-          {/* Step 3 — Confirmation */}
           {step === 3 && (
             <div className="text-center py-8">
               <CheckCircle size={64} className="text-volo-success mx-auto mb-6" />
 
               {sku.confirmationModel === 'instant' ? (
                 <>
-                  <h2 className="text-2xl font-heading font-bold mb-2">Rezerwacja potwierdzona!</h2>
-                  <p className="text-volo-muted">Twoja rezerwacja została potwierdzona. Do zobaczenia!</p>
+                  <h2 className="text-2xl font-heading font-bold mb-2">{t('booking.confirmed')}</h2>
+                  <p className="text-volo-muted">{t('booking.confirmedBody')}</p>
                 </>
               ) : (
                 <>
-                  <h2 className="text-2xl font-heading font-bold mb-2">Rezerwacja przyjęta</h2>
-                  <p className="text-volo-muted">Oczekujemy na potwierdzenie od operatora — zwykle w ciągu 2 godzin.</p>
+                  <h2 className="text-2xl font-heading font-bold mb-2">{t('booking.pending')}</h2>
+                  <p className="text-volo-muted">{t('booking.pendingBody')}</p>
                 </>
               )}
 
               <div className="card-elevated p-6 mt-8 text-left max-w-md mx-auto">
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-volo-muted">Nr rezerwacji</span>
+                    <span className="text-volo-muted">{t('booking.ref')}</span>
                     <span className="font-mono font-semibold">{bookingRef}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-volo-muted">Usługa</span>
+                    <span className="text-volo-muted">{t('booking.service')}</span>
                     <span className="font-medium">{sku.name}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-volo-muted">Data</span>
-                    <span>{selectedDate} · {selectedSlot?.time}</span>
+                    <span className="text-volo-muted">{t('booking.date')}</span>
+                    <span>
+                      {selectedDate ? formatDate(selectedDate) : ''} · {selectedSlot?.time}
+                    </span>
                   </div>
                   {isShared && (
                     <div className="flex justify-between">
-                      <span className="text-volo-muted">Osoby</span>
-                      <span>{isBuyout ? `do ${sku.capacityTotal} (prywatny)` : guests}</span>
+                      <span className="text-volo-muted">{t('booking.people')}</span>
+                      <span>
+                        {isBuyout
+                          ? t('booking.privateShort', { n: String(sku.capacityTotal) })
+                          : String(guests)}
+                      </span>
                     </div>
                   )}
                   <hr className="border-volo-border" />
                   <div className="flex justify-between font-heading font-bold text-base">
-                    <span>Razem</span>
-                    <span>{formatPrice(total)} PLN</span>
+                    <span>{t('booking.total')}</span>
+                    <span>{formatNumber(total)} PLN</span>
                   </div>
                 </div>
-                <p className="text-xs text-volo-muted mt-4">Potwierdzenie wysłane na {contact.email || 'podany email'}</p>
+                <p className="text-xs text-volo-muted mt-4">
+                  {t('booking.emailSent', {
+                    email: contact.email || t('booking.emailUnknown'),
+                  })}
+                </p>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 justify-center mt-8">
-                <Link href="/account/bookings" className="btn-primary">Moje rezerwacje</Link>
-                <Link href="/" className="btn-secondary">Strona główna</Link>
+                <Link href="/account/bookings" className="btn-primary">
+                  {t('booking.myBookings')}
+                </Link>
+                <Link href="/" className="btn-secondary">
+                  {t('sku.home')}
+                </Link>
               </div>
             </div>
           )}
         </div>
 
-        {/* Sidebar summary (desktop) */}
         {step < 3 && (
           <div className="hidden lg:block">
             <div className="sticky top-24">
@@ -360,21 +405,29 @@ export default function BookingPage() {
                 date={selectedDate ?? undefined}
                 time={selectedSlot?.time}
                 guests={step >= 1 ? (isBuyout ? sku.capacityTotal : guests) : undefined}
-                guestUnit={isShared ? (sku.capacityUnit === 'miejsce' ? 'osób' : sku.capacityUnit) : undefined}
+                guestUnit={summaryGuestUnit}
                 durationMinutes={sku.durationMinutes}
                 basePrice={basePrice}
                 addonsTotal={step >= 1 ? addonsTotal : 0}
                 totalPrice={total}
-                priceLabel={sku.priceLabel}
                 isBuyout={isBuyout}
               />
               <div className="mt-4">
                 <TrustBar
                   variant="vertical"
                   items={[
-                    { icon: <Shield size={16} />, text: 'Bezpieczna płatność' },
-                    { icon: <CalendarCheck size={16} />, text: sku.confirmationModel === 'instant' ? 'Natychmiastowe potwierdzenie' : 'Potwierdzenie w ciągu 2h' },
-                    { icon: <Clock size={16} />, text: `Czas trwania: ${sku.durationMinutes} min` },
+                    { icon: <Shield size={16} />, text: t('booking.trustPay') },
+                    {
+                      icon: <CalendarCheck size={16} />,
+                      text:
+                        sku.confirmationModel === 'instant'
+                          ? t('booking.trustConfirm')
+                          : t('booking.trustConfirmWait'),
+                    },
+                    {
+                      icon: <Clock size={16} />,
+                      text: t('booking.trustDuration', { min: String(sku.durationMinutes) }),
+                    },
                   ]}
                 />
               </div>
@@ -383,14 +436,15 @@ export default function BookingPage() {
         )}
       </div>
 
-      {/* Mobile sticky bar */}
       {step < 3 && (
         <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-volo-surface/95 backdrop-blur-md border-t border-volo-border p-4 z-40 shadow-volo-xl">
           <div className="flex items-center justify-between">
             <div>
-              <span className="text-lg font-heading font-bold">{formatPrice(total)} PLN</span>
+              <span className="text-lg font-heading font-bold">{formatNumber(total)} PLN</span>
               {sku.priceModel === 'per_unit' && !isBuyout && (
-                <span className="text-xs text-volo-muted ml-1">({guests} os.)</span>
+                <span className="text-xs text-volo-muted ml-1">
+                  ({guests} {guestUnitLabel})
+                </span>
               )}
             </div>
             <span className="text-xs text-volo-muted truncate max-w-[40%]">{sku.name}</span>

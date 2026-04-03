@@ -9,25 +9,26 @@ import {
   Settings2,
 } from 'lucide-react';
 import { mockUser } from '@/data/mock';
-
-const navItems = [
-  { href: '/account/bookings', label: 'Rezerwacje', icon: CalendarDays },
-  { href: '/account/gifts', label: 'Podarunki', icon: Gift },
-  { href: '/account/reviews', label: 'Opinie', icon: MessageSquareText },
-  { href: '/account/settings', label: 'Ustawienia', icon: Settings2 },
-] as const;
+import { useI18n } from '@/i18n/context';
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { t } = useI18n();
+
+  const navItems = [
+    { href: '/account/bookings', label: t('account.navBookings'), icon: CalendarDays },
+    { href: '/account/gifts', label: t('account.navGifts'), icon: Gift },
+    { href: '/account/reviews', label: t('account.navReviews'), icon: MessageSquareText },
+    { href: '/account/settings', label: t('account.navSettings'), icon: Settings2 },
+  ] as const;
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-volo-bg">
       <div className="section-padding py-6 sm:py-10 lg:py-12">
         <div className="container-wide mx-auto flex flex-col lg:flex-row gap-8 lg:gap-12">
-          {/* Mobile tabs */}
           <nav
             className="lg:hidden flex gap-1 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-thin snap-x snap-mandatory"
-            aria-label="Sekcje konta"
+            aria-label={t('account.sections')}
           >
             {navItems.map(({ href, label, icon: Icon }) => {
               const isActive = pathname === href;
@@ -48,17 +49,18 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
             })}
           </nav>
 
-          {/* Desktop sidebar */}
           <aside className="hidden lg:block w-64 shrink-0">
             <div className="sticky top-28 space-y-8">
               <div className="card p-5 border-volo-border">
-                <p className="text-xs font-medium uppercase tracking-wider text-volo-muted mb-1">Konto</p>
+                <p className="text-xs font-medium uppercase tracking-wider text-volo-muted mb-1">
+                  {t('account.accountLabel')}
+                </p>
                 <p className="font-heading text-lg font-semibold text-volo-text leading-tight">
                   {mockUser.name}
                 </p>
                 <p className="text-sm text-volo-muted mt-1 truncate">{mockUser.email}</p>
               </div>
-              <nav className="flex flex-col gap-1" aria-label="Menu konta">
+              <nav className="flex flex-col gap-1" aria-label={t('account.sections')}>
                 {navItems.map(({ href, label, icon: Icon }) => {
                   const isActive = pathname === href;
                   return (
@@ -81,7 +83,6 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
           </aside>
 
           <div className="min-w-0 flex-1 lg:pt-1">
-            {/* Mobile user strip */}
             <div className="lg:hidden mb-6 flex items-center gap-3 rounded-2xl border border-volo-border bg-volo-surface px-4 py-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-volo-accent-light text-volo-accent font-heading font-bold text-sm">
                 {mockUser.name

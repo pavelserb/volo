@@ -1,4 +1,8 @@
+'use client';
+
+import { useMemo } from 'react';
 import { Shield, RotateCcw, Clock } from 'lucide-react';
+import { useI18n } from '@/i18n/context';
 
 interface TrustItem {
   icon: React.ReactNode;
@@ -10,13 +14,20 @@ interface TrustBarProps {
   variant?: 'horizontal' | 'vertical';
 }
 
-const defaultItems: TrustItem[] = [
-  { icon: <Shield size={16} />, text: 'Bezpieczna płatność' },
-  { icon: <RotateCcw size={16} />, text: 'Bezpłatna anulacja' },
-  { icon: <Clock size={16} />, text: 'Natychmiastowe potwierdzenie' },
-];
+export function TrustBar({ items: itemsProp, variant = 'horizontal' }: TrustBarProps) {
+  const { t } = useI18n();
 
-export function TrustBar({ items = defaultItems, variant = 'horizontal' }: TrustBarProps) {
+  const defaultItems = useMemo<TrustItem[]>(
+    () => [
+      { icon: <Shield size={16} />, text: t('booking.trustPay') },
+      { icon: <RotateCcw size={16} />, text: t('components.trustFreeCancel') },
+      { icon: <Clock size={16} />, text: t('components.trustInstant') },
+    ],
+    [t],
+  );
+
+  const items = itemsProp ?? defaultItems;
+
   if (variant === 'vertical') {
     return (
       <div className="flex flex-col gap-2">

@@ -17,9 +17,8 @@ import { ReviewCard } from '@/components/ReviewCard';
 import { TrustBar } from '@/components/TrustBar';
 import { PriceDisplay } from '@/components/PriceDisplay';
 import { getSkuBySlug, type SKU } from '@/data/mock';
-
-const formatPrice = (amount: number) =>
-  new Intl.NumberFormat('pl-PL').format(amount);
+import { localizeSku } from '@/data/sku-locale';
+import { useI18n } from '@/i18n/context';
 
 function StarRatingDisplay({ rating }: { rating: number }) {
   const full = Math.floor(rating);
@@ -42,20 +41,33 @@ function StarRatingDisplay({ rating }: { rating: number }) {
   );
 }
 
-function capacityLabel(sku: SKU): string {
+function capacityLabelFor(sku: SKU, t: (k: string, v?: Record<string, string>) => string): string {
   if (sku.capacityModel === 'exclusive') {
-    return sku.capacityUnit === 'przejazd' ? 'Przejazd na wyłączność' : 'Lot na wyłączność';
+    const isRide =
+      sku.capacityUnit === 'przejazd' ||
+      sku.capacityUnit === 'ride' ||
+      sku.directionSlug === 'transfers';
+    return isRide ? t('sku.capacityExclusiveRide') : t('sku.capacityExclusiveFlight');
   }
-  if (sku.capacityModel === 'shared') {
-    return `Do ${sku.capacityTotal} ${sku.capacityUnit === 'miejsce' ? 'pasażerów' : sku.capacityUnit}`;
+  if (sku.capacityModel === 'shared' || sku.capacityModel === 'shared_buyout') {
+    const unit = sku.capacityUnit?.toLowerCase();
+    if (unit === 'miejsce' || unit === 'seat' || unit === 'seats') {
+      return t('sku.capacityShared', { total: String(sku.capacityTotal) });
+    }
   }
-  return `Do ${sku.capacityTotal} miejsc na pokładzie`;
+  return t('sku.capacitySeats', { total: String(sku.capacityTotal) });
 }
 
 export default function SkuDetailPage() {
   const params = useParams();
   const slug = typeof params.slug === 'string' ? params.slug : '';
-  const sku = useMemo(() => getSkuBySlug(slug), [slug]);
+  const { locale, t, formatNumber, formatDecimal } = useI18n();
+  const rawSku = useMemo(() => getSkuBySlug(slug), [slug]);
+  const sku = useMemo(
+    () => (rawSku ? localizeSku(rawSku, locale) : null),
+    [rawSku, locale],
+  );
+
   const galleryImages = useMemo(() => {
     if (!sku) return [];
     return sku.gallery.length > 0 ? sku.gallery : [sku.image];
@@ -65,21 +77,31 @@ export default function SkuDetailPage() {
   if (!sku) {
     return (
       <div className="section-padding container-narrow py-24 text-center">
-        <h1 className="font-heading text-2xl font-semibold text-volo-text mb-3">Nie znaleziono</h1>
-        <p className="text-volo-muted mb-8 max-w-md mx-auto">
-          Nie znaleźliśmy tej oferty. Sprawdź adres lub wróć na stronę główną.
-        </p>
-        <Link href="/" className="btn-primary">Strona główna</Link>
+        <h1 className="font-heading text-2xl font-semibold text-volo-text mb-3">{t('sku.notFound')}</h1>
+        <p className="text-volo-muted mb-8 max-w-md mx-auto">{t('sku.notFoundBody')}</p>
+        <Link href="/" className="btn-primary">
+          {t('sku.home')}
+        </Link>
       </div>
     );
   }
 
   const mainSrc = galleryImages[activeIndex] ?? sku.image;
   const reviewCount = sku.reviews.length;
+  const capLabel = capacityLabelFor(sku, t);
+  const buyoutUnit = sku.buyoutPrice ? t('sku.buyoutUnitPrivate') : undefined;
+
+  const trustItems = [
+    {
+      icon: <Check size={16} />,
+      text: sku.confirmationModel === 'instant' ? t('sku.confirmInstant') : t('sku.confirmWithin'),
+    },
+    { icon: <Check size={16} />, text: t('sku.paySecure') },
+    { icon: <Check size={16} />, text: t('sku.cancelHint') },
+  ];
 
   return (
     <div className="pb-24 lg:pb-0">
-      {/* Gallery */}
       <section className="w-full bg-volo-surface border-b border-volo-border">
         <div className="lg:section-padding lg:container-wide lg:pt-8 lg:pb-2">
           <div className="relative aspect-[4/3] sm:aspect-[16/10] lg:aspect-[21/9] lg:rounded-2xl lg:overflow-hidden lg:border border-volo-border shadow-volo-sm bg-volo-bg">
@@ -99,6 +121,7 @@ export default function SkuDetailPage() {
             {galleryImages.map((src, i) => (
               <button
                 key={`${src}-${i}`}
+                type="button"
                 onClick={() => setActiveIndex(i)}
                 className={`relative shrink-0 w-20 h-14 sm:w-24 sm:h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 snap-start ${
                   i === activeIndex
@@ -113,10 +136,8 @@ export default function SkuDetailPage() {
         </div>
       </section>
 
-      {/* Content */}
       <div className="section-padding container-wide py-8 lg:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] gap-10 lg:gap-14 items-start">
-          {/* Left */}
           <article className="min-w-0 space-y-8">
             <header className="space-y-4">
               <div className="flex flex-wrap items-center gap-2 text-sm">
@@ -137,42 +158,42 @@ export default function SkuDetailPage() {
                 <div className="flex items-center gap-2">
                   <StarRatingDisplay rating={sku.averageRating} />
                   <span className="text-sm font-semibold text-volo-text tabular-nums">
-                    {sku.averageRating.toFixed(1).replace('.', ',')}
+                    {formatDecimal(sku.averageRating)}
                   </span>
                   <span className="text-sm text-volo-muted">
-                    ({reviewCount} {reviewCount === 1 ? 'opinia' : reviewCount <= 4 ? 'opinie' : 'opinii'})
+                    ({t('sku.reviewWord', { count: String(reviewCount) })})
                   </span>
                 </div>
               </div>
 
               <div className="flex flex-wrap gap-2">
                 <span className="inline-flex items-center gap-1.5 rounded-xl border border-volo-border bg-volo-bg px-3 py-1.5 text-sm text-volo-text">
-                  <Clock size={16} className="text-volo-accent" /> {sku.durationMinutes} min
+                  <Clock size={16} className="text-volo-accent" /> {sku.durationMinutes}{' '}
+                  {t('common.min')}
                 </span>
                 <span className="inline-flex items-center gap-1.5 rounded-xl border border-volo-border bg-volo-bg px-3 py-1.5 text-sm text-volo-text">
-                  <Users size={16} className="text-volo-accent" /> {capacityLabel(sku)}
+                  <Users size={16} className="text-volo-accent" /> {capLabel}
                 </span>
               </div>
 
-              {/* Price block */}
               <div className="card-elevated p-5 sm:p-6 lg:hidden">
                 <PriceDisplay
                   amount={sku.price}
                   unit={sku.priceLabel}
                   size="lg"
                   buyoutAmount={sku.buyoutPrice}
-                  buyoutUnit={sku.buyoutPrice ? 'PLN / prywatny lot' : undefined}
+                  buyoutUnit={buyoutUnit}
                 />
               </div>
             </header>
 
             <section className="space-y-3">
-              <h2 className="font-heading text-xl font-semibold text-volo-text">O przeżyciu</h2>
+              <h2 className="font-heading text-xl font-semibold text-volo-text">{t('sku.about')}</h2>
               <p className="text-volo-text/90 leading-relaxed whitespace-pre-line">{sku.longDescription}</p>
             </section>
 
             <section className="space-y-4">
-              <h2 className="font-heading text-xl font-semibold text-volo-text">Co zawiera</h2>
+              <h2 className="font-heading text-xl font-semibold text-volo-text">{t('sku.includes')}</h2>
               <ul className="space-y-3">
                 {sku.includes.map((item) => (
                   <li key={item} className="flex gap-3 text-volo-text">
@@ -186,25 +207,23 @@ export default function SkuDetailPage() {
             </section>
 
             <section className="space-y-3">
-              <h2 className="font-heading text-xl font-semibold text-volo-text">Zasady anulacji</h2>
+              <h2 className="font-heading text-xl font-semibold text-volo-text">{t('sku.cancellation')}</h2>
               <div className="card p-5">
-                <p className="text-sm sm:text-base text-volo-text/90 leading-relaxed">
-                  {sku.cancellationPolicy}
-                </p>
+                <p className="text-sm sm:text-base text-volo-text/90 leading-relaxed">{sku.cancellationPolicy}</p>
               </div>
             </section>
 
             <section className="space-y-4">
               <div className="flex items-baseline justify-between gap-4">
-                <h2 className="font-heading text-xl font-semibold text-volo-text">Opinie gości</h2>
+                <h2 className="font-heading text-xl font-semibold text-volo-text">{t('sku.guestReviews')}</h2>
                 {reviewCount > 0 && (
                   <span className="text-sm text-volo-muted tabular-nums">
-                    Średnia {sku.averageRating.toFixed(1).replace('.', ',')} / 5
+                    {t('sku.avgShort', { value: formatDecimal(sku.averageRating) })}
                   </span>
                 )}
               </div>
               {reviewCount === 0 ? (
-                <p className="text-volo-muted text-sm">Jeszcze nikt nie dodał opinii.</p>
+                <p className="text-volo-muted text-sm">{t('sku.noReviews')}</p>
               ) : (
                 <div className="grid gap-4">
                   {sku.reviews.map((r) => (
@@ -215,59 +234,52 @@ export default function SkuDetailPage() {
             </section>
           </article>
 
-          {/* Right — sticky booking card (desktop) */}
           <aside className="hidden lg:block">
             <div className="card-elevated p-6 space-y-5 sticky top-24">
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-volo-muted mb-1">Cena od</p>
+                <p className="text-xs font-medium uppercase tracking-wide text-volo-muted mb-1">
+                  {t('sku.priceFrom')}
+                </p>
                 <PriceDisplay
                   amount={sku.price}
                   unit={sku.priceLabel}
                   size="lg"
                   buyoutAmount={sku.buyoutPrice}
-                  buyoutUnit={sku.buyoutPrice ? 'PLN / prywatny lot' : undefined}
+                  buyoutUnit={buyoutUnit}
                 />
               </div>
 
               <div className="flex flex-col gap-2">
                 <Link href={`/book/${sku.id}`} className="btn-primary w-full text-center">
-                  Zarezerwuj
+                  {t('sku.book')}
                 </Link>
                 <Link href={`/gift/${sku.id}`} className="btn-secondary w-full text-center gap-2">
-                  <Gift size={18} strokeWidth={2} /> Podaruj
+                  <Gift size={18} strokeWidth={2} /> {t('sku.gift')}
                 </Link>
               </div>
 
-              <TrustBar
-                variant="vertical"
-                items={[
-                  { icon: <Check size={16} />, text: sku.confirmationModel === 'instant' ? 'Natychmiastowe potwierdzenie' : 'Potwierdzenie w ciągu 2 godzin' },
-                  { icon: <Check size={16} />, text: 'Bezpieczna płatność online' },
-                  { icon: <Check size={16} />, text: 'Bezpłatna anulacja wg zasad' },
-                ]}
-              />
+              <TrustBar variant="vertical" items={trustItems} />
             </div>
           </aside>
         </div>
       </div>
 
-      {/* Mobile sticky bar */}
       <div
         className="lg:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-volo-border bg-volo-surface/95 backdrop-blur-md shadow-volo-xl"
         style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}
       >
         <div className="section-padding flex items-center gap-3 py-3">
           <div className="min-w-0 flex-1">
-            <p className="text-xs text-volo-muted">Od</p>
+            <p className="text-xs text-volo-muted">{t('sku.mobileFrom')}</p>
             <div className="flex items-baseline">
               <span className="text-lg font-heading font-bold text-volo-text tabular-nums">
-                {formatPrice(sku.price)}
+                {formatNumber(sku.price)}
               </span>
               <span className="text-price-unit">{sku.priceLabel}</span>
             </div>
           </div>
           <Link href={`/book/${sku.id}`} className="btn-primary shrink-0 px-5 py-3">
-            Zarezerwuj
+            {t('sku.book')}
           </Link>
         </div>
       </div>

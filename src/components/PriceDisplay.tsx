@@ -1,3 +1,7 @@
+'use client';
+
+import { useI18n } from '@/i18n/context';
+
 interface PriceDisplayProps {
   amount: number;
   unit: string;
@@ -6,9 +10,6 @@ interface PriceDisplayProps {
   buyoutUnit?: string;
 }
 
-const formatPrice = (amount: number) =>
-  new Intl.NumberFormat('pl-PL').format(amount);
-
 export function PriceDisplay({
   amount,
   unit,
@@ -16,18 +17,20 @@ export function PriceDisplay({
   buyoutAmount,
   buyoutUnit,
 }: PriceDisplayProps) {
+  const { formatNumber, t } = useI18n();
+
   return (
     <div className="flex flex-col">
       <div className="flex items-baseline">
         <span className={size === 'lg' ? 'text-price-lg' : 'text-price-sm'}>
-          {formatPrice(amount)}
+          {formatNumber(amount)}
         </span>
         <span className="text-price-unit">{unit}</span>
       </div>
       {buyoutAmount && buyoutUnit && (
         <div className="flex items-baseline mt-1">
           <span className="text-sm text-volo-muted">
-            lub {formatPrice(buyoutAmount)}
+            {t('sku.priceOr')} {formatNumber(buyoutAmount)}
           </span>
           <span className="text-price-unit">{buyoutUnit}</span>
         </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { Minus, Plus, Crown } from 'lucide-react';
+import { useI18n } from '@/i18n/context';
 
 interface GuestStepperProps {
   value: number;
@@ -14,9 +15,6 @@ interface GuestStepperProps {
   onBuyoutChange?: (v: boolean) => void;
 }
 
-const formatPrice = (amount: number) =>
-  new Intl.NumberFormat('pl-PL').format(amount);
-
 export function GuestStepper({
   value,
   min,
@@ -28,10 +26,20 @@ export function GuestStepper({
   isBuyout,
   onBuyoutChange,
 }: GuestStepperProps) {
+  const { formatNumber, t } = useI18n();
+
+  const caption = isBuyout
+    ? t('components.guestPrivate', { max: String(max), unit })
+    : t('components.guestCountLine', {
+        value: String(value),
+        unit,
+        max: String(max),
+      });
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-volo-text">Liczba gości</span>
+        <span className="text-sm font-medium text-volo-text">{t('components.guestCount')}</span>
         <div className="flex items-center gap-3">
           <button
             onClick={() => onChange(Math.max(min, value - 1))}
@@ -61,11 +69,7 @@ export function GuestStepper({
         </div>
       </div>
 
-      <p className="text-caption">
-        {isBuyout
-          ? `Prywatny — do ${max} ${unit}`
-          : `${value} ${unit} (max. ${max})`}
-      </p>
+      <p className="text-caption">{caption}</p>
 
       {buyoutAvailable && buyoutPrice && onBuyoutChange && (
         <button
@@ -79,11 +83,11 @@ export function GuestStepper({
           <Crown size={20} className="text-volo-accent flex-shrink-0 mt-0.5" />
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold text-volo-text">Prywatny lot</span>
-              <span className="text-sm font-bold text-volo-accent">{formatPrice(buyoutPrice)} PLN</span>
+              <span className="text-sm font-semibold text-volo-text">{t('components.privateFlight')}</span>
+              <span className="text-sm font-bold text-volo-accent">{formatNumber(buyoutPrice)} PLN</span>
             </div>
             <p className="text-xs text-volo-muted mt-1">
-              Całość dla siebie — bez obcych pasażerów, do {max} osób
+              {t('components.privateSub', { max: String(max) })}
             </p>
           </div>
         </button>

@@ -1,6 +1,9 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { Clock, Users, Star } from 'lucide-react';
+import { useI18n } from '@/i18n/context';
 
 interface SkuCardProps {
   slug: string;
@@ -10,13 +13,13 @@ interface SkuCardProps {
   priceLabel: string;
   durationMinutes: number;
   capacityTotal: number;
+  /** Legacy: used when capacityLabel is omitted */
   capacityUnit: string;
+  /** Full capacity line, e.g. "up to 3 ppl" — preferred for i18n */
+  capacityLabel?: string;
   averageRating: number;
   reviewCount: number;
 }
-
-const formatPrice = (amount: number) =>
-  new Intl.NumberFormat('pl-PL').format(amount);
 
 export function SkuCard({
   slug,
@@ -27,9 +30,15 @@ export function SkuCard({
   durationMinutes,
   capacityTotal,
   capacityUnit,
+  capacityLabel,
   averageRating,
   reviewCount,
 }: SkuCardProps) {
+  const { t, formatNumber } = useI18n();
+  const cap =
+    capacityLabel ??
+    `${t('common.upTo')} ${capacityTotal} ${capacityUnit}`;
+
   return (
     <Link href={`/s/${slug}`} className="group block">
       <article className="card-elevated overflow-hidden">
@@ -56,20 +65,20 @@ export function SkuCard({
 
           <div className="flex items-center gap-4 mt-3 text-sm text-volo-muted">
             <span className="flex items-center gap-1">
-              <Clock size={15} /> {durationMinutes} min
+              <Clock size={15} /> {durationMinutes} {t('common.min')}
             </span>
             <span className="flex items-center gap-1">
-              <Users size={15} /> do {capacityTotal} {capacityUnit}
+              <Users size={15} /> {cap}
             </span>
           </div>
 
           <div className="mt-4 pt-4 border-t border-volo-border flex items-baseline justify-between">
             <div className="flex items-baseline">
-              <span className="text-price-sm">{formatPrice(price)}</span>
+              <span className="text-price-sm">{formatNumber(price)}</span>
               <span className="text-price-unit">{priceLabel}</span>
             </div>
             <span className="text-sm font-medium text-volo-accent group-hover:underline">
-              Sprawdź →
+              {t('common.check')} →
             </span>
           </div>
         </div>

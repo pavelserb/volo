@@ -1,4 +1,7 @@
+'use client';
+
 import { Star } from 'lucide-react';
+import { useI18n } from '@/i18n/context';
 
 interface ReviewCardProps {
   author: string;
@@ -8,13 +11,14 @@ interface ReviewCardProps {
 }
 
 export function ReviewCard({ author, rating, text, date }: ReviewCardProps) {
+  const { formatDate } = useI18n();
   const initials = author
     .split(' ')
     .map((w) => w[0])
     .join('')
     .toUpperCase();
 
-  const formattedDate = new Date(date).toLocaleDateString('pl-PL', {
+  const formattedDate = formatDate(date, {
     year: 'numeric',
     month: 'long',
   });

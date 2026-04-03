@@ -1,6 +1,11 @@
+'use client';
+
 import Link from 'next/link';
+import { useI18n } from '@/i18n/context';
 
 export function Footer() {
+  const { t } = useI18n();
+
   return (
     <footer className="bg-volo-text mt-20">
       <div className="container-wide section-padding py-12">
@@ -8,41 +13,41 @@ export function Footer() {
           <div>
             <span className="text-xl font-heading font-bold text-white">Volo</span>
             <p className="mt-3 text-sm leading-relaxed text-white/60">
-              Niezapomniane przeżycia w Krakowie — loty helikopterem, transfery VIP i więcej.
+              {t('footer.tagline')}
             </p>
           </div>
 
           <div>
-            <h4 className="text-white font-semibold text-sm mb-3">Usługi</h4>
+            <h4 className="text-white font-semibold text-sm mb-3">{t('footer.services')}</h4>
             <ul className="space-y-2 text-sm text-white/50">
-              <li><Link href="/krakow/helicopters" className="hover:text-white transition-colors duration-200">Loty helikopterem</Link></li>
-              <li><Link href="/krakow/transfers" className="hover:text-white transition-colors duration-200">Transfery VIP</Link></li>
-              <li><Link href="/corporate" className="hover:text-white transition-colors duration-200">Dla firm</Link></li>
+              <li><Link href="/krakow/helicopters" className="hover:text-white transition-colors duration-200">{t('nav.helicopters')}</Link></li>
+              <li><Link href="/krakow/transfers" className="hover:text-white transition-colors duration-200">{t('nav.transfers')}</Link></li>
+              <li><Link href="/corporate" className="hover:text-white transition-colors duration-200">{t('nav.corporate')}</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-white font-semibold text-sm mb-3">Pomoc</h4>
+            <h4 className="text-white font-semibold text-sm mb-3">{t('footer.help')}</h4>
             <ul className="space-y-2 text-sm text-white/50">
-              <li><Link href="/redeem" className="hover:text-white transition-colors duration-200">Aktywuj voucher</Link></li>
-              <li><Link href="/legal/terms" className="hover:text-white transition-colors duration-200">Regulamin</Link></li>
-              <li><Link href="/legal/privacy" className="hover:text-white transition-colors duration-200">Polityka prywatności</Link></li>
+              <li><Link href="/redeem" className="hover:text-white transition-colors duration-200">{t('footer.redeem')}</Link></li>
+              <li><Link href="/legal/terms" className="hover:text-white transition-colors duration-200">{t('footer.terms')}</Link></li>
+              <li><Link href="/legal/privacy" className="hover:text-white transition-colors duration-200">{t('footer.privacy')}</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="text-white font-semibold text-sm mb-3">Kontakt</h4>
+            <h4 className="text-white font-semibold text-sm mb-3">{t('footer.contact')}</h4>
             <ul className="space-y-2 text-sm text-white/50">
               <li>info@volo.local (demo)</li>
               <li>+48 12 000 00 00 (demo)</li>
-              <li>Kraków, Polska</li>
+              <li>{t('footer.location')}</li>
             </ul>
           </div>
         </div>
 
         <div className="mt-10 pt-6 border-t border-white/10 text-xs text-white/30 flex flex-col sm:flex-row justify-between gap-2">
-          <span>&copy; {new Date().getFullYear()} Volo. Prototyp — dane demonstracyjne.</span>
-          <span>Projekt w fazie prototypowania</span>
+          <span>&copy; {new Date().getFullYear()} {t('footer.copyright')}</span>
+          <span>{t('footer.phase')}</span>
         </div>
       </div>
     </footer>

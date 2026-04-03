@@ -41,8 +41,10 @@ export default function AccountBookingsPage() {
           <img src={b.image} alt="" className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
         </div>
         <div className="p-5 sm:p-6 flex flex-col flex-1 min-w-0">
-          <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
-            <h2 className="font-heading text-lg font-semibold text-volo-text leading-snug">{b.skuName}</h2>
+          <div className="flex flex-wrap items-start justify-between gap-3 mb-3 min-w-0">
+            <h2 className="font-heading text-lg font-semibold text-volo-text leading-snug break-words min-w-0 pr-2">
+              {b.skuName}
+            </h2>
             {statusBadge(b.status)}
           </div>
           <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-volo-muted mb-4">

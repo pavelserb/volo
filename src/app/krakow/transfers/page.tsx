@@ -34,20 +34,20 @@ export default function KrakowTransfersPage() {
         alt={t('landing.transferHeroAlt')}
         overlay="left"
       >
-        <div className="max-w-2xl">
-          <p className="mb-3 text-sm font-medium uppercase tracking-widest text-volo-accent">
+        <div className="max-w-2xl min-w-0">
+          <p className="mb-3 text-xs sm:text-sm font-medium uppercase tracking-widest text-volo-accent">
             {t('landing.transferBadge')}
           </p>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold tracking-tight text-white leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold tracking-tight text-white leading-tight">
             {t('landing.transferTitle')}
           </h1>
-          <p className="mt-6 text-lg leading-relaxed text-white/85 sm:text-xl max-w-xl">
+          <p className="mt-4 sm:mt-6 text-base sm:text-lg leading-relaxed text-white/85 md:text-xl max-w-xl">
             {t('landing.transferSub')}
           </p>
-          <div className="mt-8">
+          <div className="mt-6 sm:mt-8">
             <Link
               href={transferSkuLoc ? `/s/${transferSkuLoc.slug}` : '/s/vip-transfer-lotnisko'}
-              className="btn-primary text-base px-8 py-3.5"
+              className="btn-primary text-base px-6 sm:px-8 py-3.5 w-full sm:w-auto justify-center"
             >
               {t('landing.transferCta')}
             </Link>
@@ -57,7 +57,7 @@ export default function KrakowTransfersPage() {
 
       <div className="border-b border-volo-border bg-volo-surface/80 backdrop-blur-sm">
         <div className="container-wide section-padding mx-auto py-4">
-          <p className="text-center text-sm font-medium text-volo-muted sm:text-base">
+          <p className="text-center text-xs sm:text-sm font-medium text-volo-muted md:text-base px-1 leading-snug">
             {t('landing.transferStrip')}
           </p>
         </div>
@@ -96,19 +96,21 @@ export default function KrakowTransfersPage() {
             subtitle={t('landing.transferHowSub')}
             align="center"
           />
-          <div className="mt-12 relative">
-            <div className="absolute left-6 top-0 bottom-0 w-px bg-volo-border hidden sm:block" />
-            <div className="space-y-10">
+          <div className="mt-10 sm:mt-12 relative">
+            <div className="absolute left-[1.375rem] sm:left-6 top-0 bottom-0 w-px bg-volo-border" />
+            <div className="space-y-8 sm:space-y-10">
               {STEP_KEYS.map(({ step, titleKey, textKey }) => (
-                <div key={step} className="flex gap-5 sm:gap-6">
+                <div key={step} className="flex gap-4 sm:gap-6 min-w-0">
                   <div className="relative z-10 flex-shrink-0">
-                    <div className="w-12 h-12 rounded-full bg-volo-accent flex items-center justify-center text-white font-heading font-bold text-sm shadow-volo-md ring-4 ring-volo-accent-light">
+                    <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-volo-accent flex items-center justify-center text-white font-heading font-bold text-xs sm:text-sm shadow-volo-md ring-4 ring-volo-accent-light">
                       {step}
                     </div>
                   </div>
-                  <div className="pt-2.5">
-                    <h3 className="font-heading text-lg font-semibold text-volo-text">{t(titleKey)}</h3>
-                    <p className="mt-1 text-sm text-volo-muted leading-relaxed">{t(textKey)}</p>
+                  <div className="pt-1 sm:pt-2.5 min-w-0">
+                    <h3 className="font-heading text-base sm:text-lg font-semibold text-volo-text break-words">
+                      {t(titleKey)}
+                    </h3>
+                    <p className="mt-1 text-sm text-volo-muted leading-relaxed break-words">{t(textKey)}</p>
                   </div>
                 </div>
               ))}

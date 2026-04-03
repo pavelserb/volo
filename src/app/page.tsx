@@ -21,45 +21,48 @@ export default function HomePage() {
 
   return (
     <>
-      <section className="relative min-h-[100svh] flex items-center overflow-hidden">
+      <section className="relative min-h-[100svh] min-h-[100dvh] flex items-center overflow-hidden">
         <Image
           src="https://images.unsplash.com/photo-1524508268646-56d1359f5167?w=1920&h=1080&fit=crop"
           alt={t('common.heroAlt')}
           fill
-          className="object-cover motion-safe:animate-[kenburns_20s_ease-in-out_infinite_alternate]"
+          className="object-cover object-center motion-safe:animate-none md:motion-safe:animate-[kenburns_20s_ease-in-out_infinite_alternate]"
           priority
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/20" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
 
-        <div className="relative z-10 section-padding container-wide w-full">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 backdrop-blur-sm px-4 py-1.5 mb-6">
+        <div className="relative z-10 section-padding container-wide w-full py-16 sm:py-20 md:py-24 pb-28 sm:pb-32">
+          <div className="max-w-3xl min-w-0">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 backdrop-blur-sm px-3 sm:px-4 py-1.5 mb-5 sm:mb-6 max-w-full">
               <div className="w-2 h-2 rounded-full bg-volo-accent animate-pulse" />
-              <span className="text-xs font-medium uppercase tracking-widest text-white/90">
+              <span className="text-[10px] sm:text-xs font-medium uppercase tracking-widest text-white/90 break-words">
                 {t('common.premiumBadge')}
               </span>
             </div>
 
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-heading font-bold tracking-tight text-white leading-[0.95]">
+            <h1 className="text-[2.35rem] leading-[0.98] sm:text-5xl sm:leading-[0.95] md:text-6xl lg:text-7xl xl:text-8xl font-heading font-bold tracking-tight text-white">
               {t('common.heroLine1')}
               <br />
               <span className="text-volo-accent">{t('common.heroAccent')}</span>
             </h1>
 
-            <p className="mt-8 text-lg sm:text-xl leading-relaxed text-white/75 max-w-xl">
+            <p className="mt-6 sm:mt-8 text-base sm:text-lg md:text-xl leading-relaxed text-white/75 max-w-xl">
               {t('common.heroSub')}
             </p>
 
-            <div className="mt-10 flex flex-wrap items-center gap-4">
-              <Link href="/krakow/helicopters" className="btn-primary text-base px-8 py-4 text-lg">
+            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 sm:gap-4">
+              <Link
+                href="/krakow/helicopters"
+                className="btn-primary text-base px-6 sm:px-8 py-3.5 sm:py-4 w-full sm:w-auto justify-center"
+              >
                 {t('common.discoverFlights')}
                 <ArrowRight size={20} />
               </Link>
               <Link
                 href="/krakow/transfers"
-                className="inline-flex items-center gap-2 text-white/80 hover:text-white font-medium text-base px-4 py-4 transition-colors duration-200"
+                className="inline-flex items-center justify-center gap-2 text-white/80 hover:text-white font-medium text-base px-4 py-3 sm:py-4 transition-colors duration-200 w-full sm:w-auto"
               >
                 {t('nav.transfers')}
                 <ChevronRight size={18} />
@@ -92,7 +95,7 @@ export default function HomePage() {
 
       <section className="bg-volo-text">
         <div className="container-wide section-padding mx-auto py-8 sm:py-10">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-8 text-center">
             {[
               { value: '4.7', labelKey: 'common.avgRating' as const, suffix: '/ 5' },
               { value: '500+', labelKey: 'common.flightsDone' as const, suffix: '' },
@@ -100,7 +103,7 @@ export default function HomePage() {
               { value: '48h', labelKey: 'common.freeCancel' as const, suffix: '' },
             ].map((stat) => (
               <div key={stat.labelKey}>
-                <div className="text-3xl sm:text-4xl font-heading font-bold text-white tabular-nums">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-heading font-bold text-white tabular-nums">
                   {stat.value}
                   {stat.suffix && (
                     <span className="text-lg text-white/40 ml-1">{stat.suffix}</span>
@@ -159,17 +162,17 @@ export default function HomePage() {
                 </span>
               </div>
 
-              <div className="mt-8 flex items-end justify-between gap-4 pt-6 border-t border-volo-border">
-                <div>
+              <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between pt-6 border-t border-volo-border">
+                <div className="min-w-0">
                   <p className="text-xs text-volo-muted uppercase tracking-wider mb-1">{t('common.from')}</p>
-                  <div className="flex items-baseline">
-                    <span className="text-3xl font-heading font-bold text-volo-text">
+                  <div className="flex flex-wrap items-baseline gap-x-1">
+                    <span className="text-2xl sm:text-3xl font-heading font-bold text-volo-text">
                       {formatNumber(heliSku.price)}
                     </span>
-                    <span className="text-sm text-volo-muted ml-1.5">{heliSku.priceLabel}</span>
+                    <span className="text-sm text-volo-muted">{heliSku.priceLabel}</span>
                   </div>
                 </div>
-                <Link href={`/s/${heliSku.slug}`} className="btn-primary px-6 py-3">
+                <Link href={`/s/${heliSku.slug}`} className="btn-primary px-6 py-3 w-full sm:w-auto justify-center shrink-0">
                   {t('common.check')}
                   <ArrowRight size={18} />
                 </Link>
@@ -196,7 +199,7 @@ export default function HomePage() {
                 />
               ))}
             </div>
-            <blockquote className="text-xl sm:text-2xl lg:text-3xl font-heading text-white leading-snug font-medium italic">
+            <blockquote className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-heading text-white leading-snug font-medium italic px-1">
               &ldquo;{featuredReview.text}&rdquo;
             </blockquote>
             <div className="mt-6 flex items-center justify-center gap-3">
@@ -238,17 +241,17 @@ export default function HomePage() {
                 </span>
               </div>
 
-              <div className="mt-8 flex items-end justify-between gap-4 pt-6 border-t border-volo-border">
-                <div>
+              <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between pt-6 border-t border-volo-border">
+                <div className="min-w-0">
                   <p className="text-xs text-volo-muted uppercase tracking-wider mb-1">{t('common.price')}</p>
-                  <div className="flex items-baseline">
-                    <span className="text-3xl font-heading font-bold text-volo-text">
+                  <div className="flex flex-wrap items-baseline gap-x-1">
+                    <span className="text-2xl sm:text-3xl font-heading font-bold text-volo-text">
                       {formatNumber(transferSku.price)}
                     </span>
-                    <span className="text-sm text-volo-muted ml-1.5">{transferSku.priceLabel}</span>
+                    <span className="text-sm text-volo-muted">{transferSku.priceLabel}</span>
                   </div>
                 </div>
-                <Link href={`/s/${transferSku.slug}`} className="btn-primary px-6 py-3">
+                <Link href={`/s/${transferSku.slug}`} className="btn-primary px-6 py-3 w-full sm:w-auto justify-center shrink-0">
                   {t('common.check')}
                   <ArrowRight size={18} />
                 </Link>
@@ -303,7 +306,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="relative min-h-[400px] lg:min-h-[480px] flex items-center overflow-hidden">
+      <section className="relative min-h-[min(100svh,520px)] sm:min-h-[400px] lg:min-h-[480px] flex items-center overflow-hidden">
         <Image
           src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1600&h=900&fit=crop"
           alt={t('common.giftAlt')}
@@ -313,8 +316,8 @@ export default function HomePage() {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-black/30" />
 
-        <div className="relative z-10 section-padding container-wide w-full">
-          <div className="max-w-xl">
+        <div className="relative z-10 section-padding container-wide w-full py-14 sm:py-16">
+          <div className="max-w-xl min-w-0">
             <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-volo-accent/20 backdrop-blur-sm text-volo-accent mb-5">
               <Gift size={28} strokeWidth={1.75} />
             </div>
@@ -326,12 +329,15 @@ export default function HomePage() {
             <p className="mt-5 text-lg leading-relaxed text-white/70 max-w-md">
               {t('common.giftBody')}
             </p>
-            <div className="mt-8 flex flex-wrap items-center gap-4">
-              <Link href="/gift/heli-scenic-20" className="btn-primary text-base px-8 py-3.5">
+            <div className="mt-8 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 sm:gap-4">
+              <Link
+                href="/gift/heli-scenic-20"
+                className="btn-primary text-base px-6 sm:px-8 py-3.5 w-full sm:w-auto justify-center"
+              >
                 {t('common.buyVoucher')}
                 <ArrowRight size={18} />
               </Link>
-              <span className="text-sm text-white/40">{t('common.deliveryHint')}</span>
+              <span className="text-sm text-white/40 text-center sm:text-left">{t('common.deliveryHint')}</span>
             </div>
           </div>
         </div>

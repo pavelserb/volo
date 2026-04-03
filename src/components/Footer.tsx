@@ -7,12 +7,12 @@ export function Footer() {
   const { t } = useI18n();
 
   return (
-    <footer className="bg-volo-text mt-20">
-      <div className="container-wide section-padding py-12">
+    <footer className="bg-volo-text mt-12 sm:mt-16 lg:mt-20 safe-bottom-pad">
+      <div className="container-wide section-padding py-10 sm:py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <span className="text-xl font-heading font-bold text-white">Volo</span>
-            <p className="mt-3 text-sm leading-relaxed text-white/60">
+            <p className="mt-3 text-sm leading-relaxed text-white/60 break-words">
               {t('footer.tagline')}
             </p>
           </div>

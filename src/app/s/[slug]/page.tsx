@@ -101,7 +101,7 @@ export default function SkuDetailPage() {
   ];
 
   return (
-    <div className="pb-24 lg:pb-0">
+    <div className="pb-[5.5rem] sm:pb-24 lg:pb-0 min-w-0">
       <section className="w-full bg-volo-surface border-b border-volo-border">
         <div className="lg:section-padding lg:container-wide lg:pt-8 lg:pb-2">
           <div className="relative aspect-[4/3] sm:aspect-[16/10] lg:aspect-[21/9] lg:rounded-2xl lg:overflow-hidden lg:border border-volo-border shadow-volo-sm bg-volo-bg">
@@ -136,9 +136,9 @@ export default function SkuDetailPage() {
         </div>
       </section>
 
-      <div className="section-padding container-wide py-8 lg:py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] gap-10 lg:gap-14 items-start">
-          <article className="min-w-0 space-y-8">
+      <div className="section-padding container-wide py-6 sm:py-8 lg:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(280px,380px)] gap-8 sm:gap-10 lg:gap-14 items-start">
+          <article className="min-w-0 space-y-6 sm:space-y-8">
             <header className="space-y-4">
               <div className="flex flex-wrap items-center gap-2 text-sm">
                 <span className="inline-flex items-center rounded-full bg-volo-accent-light px-3 py-1 font-medium text-volo-accent">
@@ -150,7 +150,7 @@ export default function SkuDetailPage() {
                 </span>
               </div>
 
-              <h1 className="font-heading text-3xl sm:text-4xl lg:text-[2.5rem] font-bold text-volo-text leading-tight tracking-tight">
+              <h1 className="font-heading text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] font-bold text-volo-text leading-tight tracking-tight break-words">
                 {sku.name}
               </h1>
 
@@ -265,20 +265,19 @@ export default function SkuDetailPage() {
       </div>
 
       <div
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-volo-border bg-volo-surface/95 backdrop-blur-md shadow-volo-xl"
-        style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-volo-border bg-volo-surface/95 backdrop-blur-md shadow-volo-xl safe-bottom-pad"
       >
-        <div className="section-padding flex items-center gap-3 py-3">
+        <div className="section-padding flex items-center gap-3 py-3 min-w-0">
           <div className="min-w-0 flex-1">
             <p className="text-xs text-volo-muted">{t('sku.mobileFrom')}</p>
-            <div className="flex items-baseline">
+            <div className="flex flex-wrap items-baseline gap-x-1">
               <span className="text-lg font-heading font-bold text-volo-text tabular-nums">
                 {formatNumber(sku.price)}
               </span>
               <span className="text-price-unit">{sku.priceLabel}</span>
             </div>
           </div>
-          <Link href={`/book/${sku.id}`} className="btn-primary shrink-0 px-5 py-3">
+          <Link href={`/book/${sku.id}`} className="btn-primary shrink-0 px-4 sm:px-5 py-2.5 sm:py-3 text-sm sm:text-base">
             {t('sku.book')}
           </Link>
         </div>

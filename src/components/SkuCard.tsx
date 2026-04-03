@@ -42,7 +42,7 @@ export function SkuCard({
   return (
     <Link href={`/s/${slug}`} className="group block">
       <article className="card-elevated overflow-hidden">
-        <div className="relative h-56 overflow-hidden">
+        <div className="relative h-48 sm:h-56 overflow-hidden">
           <Image
             src={image}
             alt={name}
@@ -58,26 +58,26 @@ export function SkuCard({
           </div>
         </div>
 
-        <div className="p-5">
-          <h3 className="text-lg font-heading font-semibold text-volo-text group-hover:text-volo-accent transition-colors duration-200">
+        <div className="p-4 sm:p-5 min-w-0">
+          <h3 className="text-base sm:text-lg font-heading font-semibold text-volo-text group-hover:text-volo-accent transition-colors duration-200 line-clamp-2">
             {name}
           </h3>
 
-          <div className="flex items-center gap-4 mt-3 text-sm text-volo-muted">
-            <span className="flex items-center gap-1">
-              <Clock size={15} /> {durationMinutes} {t('common.min')}
+          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-1 mt-3 text-sm text-volo-muted">
+            <span className="flex items-center gap-1 min-w-0">
+              <Clock size={15} className="shrink-0" /> {durationMinutes} {t('common.min')}
             </span>
-            <span className="flex items-center gap-1">
-              <Users size={15} /> {cap}
+            <span className="flex items-center gap-1 min-w-0 line-clamp-2">
+              <Users size={15} className="shrink-0 mt-0.5 sm:mt-0" /> {cap}
             </span>
           </div>
 
-          <div className="mt-4 pt-4 border-t border-volo-border flex items-baseline justify-between">
-            <div className="flex items-baseline">
+          <div className="mt-4 pt-4 border-t border-volo-border flex flex-col gap-3 sm:flex-row sm:items-baseline sm:justify-between">
+            <div className="flex flex-wrap items-baseline gap-x-1 min-w-0">
               <span className="text-price-sm">{formatNumber(price)}</span>
               <span className="text-price-unit">{priceLabel}</span>
             </div>
-            <span className="text-sm font-medium text-volo-accent group-hover:underline">
+            <span className="text-sm font-medium text-volo-accent group-hover:underline shrink-0">
               {t('common.check')} →
             </span>
           </div>

@@ -21,7 +21,7 @@ export function Hero({
         src={image}
         alt={alt}
         fill
-        className="object-cover"
+        className="object-cover object-center"
         priority
         sizes="100vw"
       />
@@ -32,7 +32,7 @@ export function Hero({
             : 'hero-overlay'
         }
       />
-      <div className="relative z-10 section-padding container-wide w-full">
+      <div className="relative z-10 section-padding container-wide w-full py-12 sm:py-16 lg:py-10">
         {children}
       </div>
     </section>

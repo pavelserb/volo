@@ -45,8 +45,8 @@ export function BookingSummary({
       : null;
 
   return (
-    <div className="card-elevated overflow-hidden">
-      <div className="relative h-48 w-full">
+    <div className="card-elevated overflow-hidden min-w-0">
+      <div className="relative h-40 sm:h-48 w-full">
         <Image
           src={image}
           alt={skuName}
@@ -56,9 +56,9 @@ export function BookingSummary({
         />
       </div>
 
-      <div className="p-5 space-y-4">
-        <div>
-          <h3 className="text-lg font-heading font-semibold text-volo-text">{skuName}</h3>
+      <div className="p-4 sm:p-5 space-y-4 min-w-0">
+        <div className="min-w-0">
+          <h3 className="text-base sm:text-lg font-heading font-semibold text-volo-text line-clamp-2">{skuName}</h3>
           <div className="flex items-center gap-1 mt-1 text-caption">
             <MapPin size={14} />
             <span>{city}</span>

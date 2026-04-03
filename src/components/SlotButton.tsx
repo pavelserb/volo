@@ -16,8 +16,8 @@ export function SlotButton({ time, remaining, total, selected, onClick }: SlotBu
     <button
       onClick={onClick}
       className={`
-        relative flex flex-col items-center gap-1 px-4 py-3 rounded-xl
-        border-2 transition-all duration-200 text-center min-w-[90px]
+        relative flex flex-col items-center gap-1 w-full min-w-0 px-2 py-2.5 sm:px-4 sm:py-3 rounded-xl
+        border-2 transition-all duration-200 text-center sm:min-w-[90px]
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-volo-accent focus-visible:ring-offset-2
         ${selected
           ? 'border-volo-accent bg-volo-accent-light shadow-volo-md'

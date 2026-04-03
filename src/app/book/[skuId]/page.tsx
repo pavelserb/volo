@@ -111,7 +111,7 @@ export default function BookingPage() {
   );
 
   return (
-    <div className="container-narrow section-padding py-8">
+    <div className="container-narrow section-padding py-6 sm:py-8 max-w-full">
       {step < 3 && (
         <div className="mb-10">
           <StepIndicator steps={stepLabels} currentStep={step} />
@@ -154,7 +154,7 @@ export default function BookingPage() {
               {selectedDate && (
                 <div>
                   <h3 className="text-sm font-semibold mb-3">{t('booking.availableTimes')}</h3>
-                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
                     {slotsForDate.map((slot) => (
                       <SlotButton
                         key={slot.id}
@@ -173,10 +173,10 @@ export default function BookingPage() {
                 </div>
               )}
 
-              <div className="mt-8 flex justify-end">
+              <div className="mt-8 flex justify-end pb-2 lg:pb-0">
                 <button
                   type="button"
-                  className="btn-primary"
+                  className="btn-primary w-full sm:w-auto"
                   disabled={!canProceedStep0}
                   onClick={() => setStep(1)}
                 >
@@ -245,8 +245,8 @@ export default function BookingPage() {
                 </div>
               )}
 
-              <div className="mt-8 flex justify-end">
-                <button type="button" className="btn-primary" onClick={() => setStep(2)}>
+              <div className="mt-8 flex justify-end pb-2 lg:pb-0">
+                <button type="button" className="btn-primary w-full sm:w-auto" onClick={() => setStep(2)}>
                   {t('booking.next')}
                 </button>
               </div>
@@ -316,7 +316,7 @@ export default function BookingPage() {
 
               <button
                 type="button"
-                className="btn-primary w-full text-lg py-4"
+                className="btn-primary w-full text-base sm:text-lg py-3.5 sm:py-4"
                 disabled={!canProceedStep2}
                 onClick={() => setStep(3)}
               >
@@ -346,24 +346,24 @@ export default function BookingPage() {
 
               <div className="card-elevated p-6 mt-8 text-left max-w-md mx-auto">
                 <div className="space-y-3 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-volo-muted">{t('booking.ref')}</span>
-                    <span className="font-mono font-semibold">{bookingRef}</span>
+                  <div className="flex flex-col gap-0.5 sm:flex-row sm:justify-between sm:items-baseline">
+                    <span className="text-volo-muted shrink-0">{t('booking.ref')}</span>
+                    <span className="font-mono font-semibold break-all text-right sm:text-left">{bookingRef}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-volo-muted">{t('booking.service')}</span>
-                    <span className="font-medium">{sku.name}</span>
+                  <div className="flex flex-col gap-0.5 sm:flex-row sm:justify-between sm:gap-4">
+                    <span className="text-volo-muted shrink-0">{t('booking.service')}</span>
+                    <span className="font-medium text-right sm:text-left break-words">{sku.name}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-volo-muted">{t('booking.date')}</span>
-                    <span>
+                  <div className="flex flex-col gap-0.5 sm:flex-row sm:justify-between">
+                    <span className="text-volo-muted shrink-0">{t('booking.date')}</span>
+                    <span className="text-right sm:text-left break-words">
                       {selectedDate ? formatDate(selectedDate) : ''} · {selectedSlot?.time}
                     </span>
                   </div>
                   {isShared && (
-                    <div className="flex justify-between">
-                      <span className="text-volo-muted">{t('booking.people')}</span>
-                      <span>
+                    <div className="flex flex-col gap-0.5 sm:flex-row sm:justify-between">
+                      <span className="text-volo-muted shrink-0">{t('booking.people')}</span>
+                      <span className="text-right sm:text-left">
                         {isBuyout
                           ? t('booking.privateShort', { n: String(sku.capacityTotal) })
                           : String(guests)}
@@ -371,9 +371,9 @@ export default function BookingPage() {
                     </div>
                   )}
                   <hr className="border-volo-border" />
-                  <div className="flex justify-between font-heading font-bold text-base">
+                  <div className="flex justify-between items-baseline gap-4 font-heading font-bold text-base">
                     <span>{t('booking.total')}</span>
-                    <span>{formatNumber(total)} PLN</span>
+                    <span className="tabular-nums shrink-0">{formatNumber(total)} PLN</span>
                   </div>
                 </div>
                 <p className="text-xs text-volo-muted mt-4">
@@ -437,21 +437,23 @@ export default function BookingPage() {
       </div>
 
       {step < 3 && (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-volo-surface/95 backdrop-blur-md border-t border-volo-border p-4 z-40 shadow-volo-xl">
-          <div className="flex items-center justify-between">
-            <div>
-              <span className="text-lg font-heading font-bold">{formatNumber(total)} PLN</span>
-              {sku.priceModel === 'per_unit' && !isBuyout && (
-                <span className="text-xs text-volo-muted ml-1">
-                  ({guests} {guestUnitLabel})
-                </span>
-              )}
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-volo-surface/95 backdrop-blur-md border-t border-volo-border px-4 pt-3 z-40 shadow-volo-xl safe-bottom-pad">
+          <div className="flex flex-col gap-2 min-w-0">
+            <span className="text-xs text-volo-muted line-clamp-2 leading-snug">{sku.name}</span>
+            <div className="flex items-baseline justify-between gap-3">
+              <div className="min-w-0">
+                <span className="text-lg font-heading font-bold tabular-nums">{formatNumber(total)} PLN</span>
+                {sku.priceModel === 'per_unit' && !isBuyout && (
+                  <span className="text-xs text-volo-muted ml-1 block sm:inline">
+                    ({guests} {guestUnitLabel})
+                  </span>
+                )}
+              </div>
             </div>
-            <span className="text-xs text-volo-muted truncate max-w-[40%]">{sku.name}</span>
           </div>
         </div>
       )}
-      {step < 3 && <div className="lg:hidden h-20" />}
+      {step < 3 && <div className="lg:hidden h-24 sm:h-28" aria-hidden />}
     </div>
   );
 }

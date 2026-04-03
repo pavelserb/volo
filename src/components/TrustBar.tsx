@@ -32,9 +32,9 @@ export function TrustBar({ items: itemsProp, variant = 'horizontal' }: TrustBarP
     return (
       <div className="flex flex-col gap-2">
         {items.map((item, i) => (
-          <div key={i} className="flex items-center gap-2 text-sm text-volo-muted">
+          <div key={i} className="flex items-start gap-2 text-sm text-volo-muted">
             <span className="text-volo-success flex-shrink-0">{item.icon}</span>
-            <span>{item.text}</span>
+            <span className="min-w-0 break-words leading-snug">{item.text}</span>
           </div>
         ))}
       </div>
@@ -42,11 +42,11 @@ export function TrustBar({ items: itemsProp, variant = 'horizontal' }: TrustBarP
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+    <div className="flex flex-wrap items-center gap-x-3 sm:gap-x-5 gap-y-2">
       {items.map((item, i) => (
-        <div key={i} className="flex items-center gap-1.5 text-sm text-volo-muted">
+        <div key={i} className="flex items-start gap-1.5 text-xs sm:text-sm text-volo-muted max-w-full">
           <span className="text-volo-success flex-shrink-0">{item.icon}</span>
-          <span>{item.text}</span>
+          <span className="min-w-0 break-words leading-snug">{item.text}</span>
         </div>
       ))}
     </div>

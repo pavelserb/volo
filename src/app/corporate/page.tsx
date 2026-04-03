@@ -22,15 +22,15 @@ export default function CorporatePage() {
         overlay="center"
         minHeight="min-h-[400px] lg:min-h-[480px]"
       >
-        <div className="text-center max-w-3xl mx-auto">
+        <div className="text-center max-w-3xl mx-auto min-w-0 px-1">
           <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 backdrop-blur-sm px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-white">
             <Building2 size={14} />
             {t('corporate.b2b')}
           </p>
-          <h1 className="text-4xl sm:text-5xl font-heading font-bold tracking-tight text-white leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold tracking-tight text-white leading-tight break-words">
             {t('corporate.title')}
           </h1>
-          <p className="mt-6 text-lg leading-relaxed text-white/85 sm:text-xl max-w-2xl mx-auto">
+          <p className="mt-4 sm:mt-6 text-base sm:text-lg leading-relaxed text-white/85 md:text-xl max-w-2xl mx-auto">
             {t('corporate.sub')}
           </p>
         </div>

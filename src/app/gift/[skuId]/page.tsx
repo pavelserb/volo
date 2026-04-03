@@ -100,8 +100,8 @@ export default function GiftPurchasePage() {
   );
 
   return (
-    <div className="section-padding py-10 sm:py-14 lg:py-16">
-      <div className="container-narrow mx-auto max-w-2xl">
+    <div className="section-padding py-8 sm:py-14 lg:py-16">
+      <div className="container-narrow mx-auto max-w-2xl w-full min-w-0">
         <div className="mb-10 flex items-start gap-4">
           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-volo-accent-light text-volo-accent">
             <Gift size={24} strokeWidth={2} />
@@ -122,8 +122,8 @@ export default function GiftPurchasePage() {
         </div>
 
         {step === 0 && (
-          <div className="card-elevated p-6 sm:p-8 space-y-6">
-            <h2 className="font-heading text-xl font-semibold text-volo-text">{t('giftFlow.step0Title')}</h2>
+          <div className="card-elevated p-4 sm:p-6 md:p-8 space-y-5 sm:space-y-6">
+            <h2 className="font-heading text-lg sm:text-xl font-semibold text-volo-text">{t('giftFlow.step0Title')}</h2>
             <div className="space-y-2">
               <label htmlFor="recipient" className="text-sm font-medium text-volo-text">
                 {t('giftFlow.recipient')}
@@ -174,8 +174,8 @@ export default function GiftPurchasePage() {
         )}
 
         {step === 1 && (
-          <div className="card-elevated p-6 sm:p-8 space-y-6">
-            <h2 className="font-heading text-xl font-semibold text-volo-text">{t('giftFlow.step1Title')}</h2>
+          <div className="card-elevated p-4 sm:p-6 md:p-8 space-y-5 sm:space-y-6">
+            <h2 className="font-heading text-lg sm:text-xl font-semibold text-volo-text">{t('giftFlow.step1Title')}</h2>
             <p className="text-sm text-volo-muted leading-relaxed">{t('giftFlow.step1Sub')}</p>
             <div className="grid gap-4">
               {deliveryOptions.map(({ id, titleKey, descKey, icon: Icon }) => (
@@ -237,8 +237,8 @@ export default function GiftPurchasePage() {
         )}
 
         {step === 2 && (
-          <div className="card-elevated p-6 sm:p-8 space-y-6">
-            <h2 className="font-heading text-xl font-semibold text-volo-text">{t('giftFlow.step2Title')}</h2>
+          <div className="card-elevated p-4 sm:p-6 md:p-8 space-y-5 sm:space-y-6">
+            <h2 className="font-heading text-lg sm:text-xl font-semibold text-volo-text">{t('giftFlow.step2Title')}</h2>
             <div className="rounded-2xl border border-volo-border bg-volo-bg p-5 flex justify-between items-baseline gap-4">
               <span className="text-sm font-medium text-volo-muted">{t('giftFlow.toPay')}</span>
               <span className="text-2xl font-heading font-bold text-volo-text tabular-nums">
@@ -283,7 +283,7 @@ export default function GiftPurchasePage() {
         )}
 
         {step === 3 && (
-          <div className="card-elevated p-6 sm:p-10 text-center space-y-6">
+          <div className="card-elevated p-5 sm:p-8 md:p-10 text-center space-y-5 sm:space-y-6">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-volo-accent-light text-4xl">
               🎁
             </div>

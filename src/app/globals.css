@@ -1,0 +1,147 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-volo-bg text-volo-text font-body antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-heading;
+  }
+}
+
+@layer components {
+  /* ─── Buttons ─── */
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2
+      bg-volo-accent hover:bg-volo-accent-hover active:scale-[0.98]
+      text-white font-semibold
+      px-6 py-3 rounded-xl
+      transition-all duration-200 ease-out
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-volo-accent focus-visible:ring-offset-2
+      disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-volo-accent disabled:active:scale-100 disabled:hover:shadow-none;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2
+      border border-volo-border hover:border-volo-accent hover:text-volo-accent
+      text-volo-text font-medium
+      px-6 py-3 rounded-xl
+      transition-all duration-200 ease-out
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-volo-accent focus-visible:ring-offset-2
+      disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2
+      text-volo-muted hover:text-volo-text
+      font-medium px-4 py-2 rounded-lg
+      transition-colors duration-200
+      disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* ─── Cards: three depth levels ─── */
+
+  .card {
+    @apply bg-volo-surface rounded-2xl border border-volo-border
+      shadow-volo-sm transition-all duration-200;
+  }
+
+  .card-elevated {
+    @apply bg-volo-surface rounded-2xl border border-volo-border
+      shadow-volo-md transition-all duration-200
+      motion-safe:hover:shadow-volo-lg motion-safe:hover:-translate-y-0.5;
+  }
+
+  .card-prominent {
+    @apply bg-volo-surface rounded-2xl
+      border-l-4 border-l-volo-accent border border-volo-border
+      shadow-volo-lg transition-all duration-200;
+  }
+
+  /* ─── Hero overlay ─── */
+
+  .hero-overlay {
+    @apply absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent;
+  }
+
+  .hero-overlay-center {
+    @apply absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/10;
+  }
+
+  /* ─── Inputs ─── */
+
+  .input {
+    @apply w-full px-4 py-3 rounded-xl border border-volo-border
+      bg-volo-surface text-volo-text placeholder:text-volo-muted
+      focus:outline-none focus:ring-2 focus:ring-volo-accent focus:border-transparent
+      transition-all duration-200
+      disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-volo-bg;
+  }
+
+  /* ─── Typography helpers ─── */
+
+  .text-price-lg {
+    @apply text-2xl font-heading font-bold text-volo-text;
+  }
+
+  .text-price-sm {
+    @apply text-lg font-heading font-bold text-volo-text;
+  }
+
+  .text-price-unit {
+    @apply text-sm font-normal text-volo-muted ml-1;
+  }
+
+  .text-section-heading {
+    @apply text-2xl sm:text-3xl font-heading font-bold text-volo-text;
+  }
+
+  .text-caption {
+    @apply text-sm text-volo-muted;
+  }
+
+  /* ─── Layout containers ─── */
+
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+
+  .container-narrow {
+    @apply max-w-5xl mx-auto;
+  }
+
+  .container-wide {
+    @apply max-w-7xl mx-auto;
+  }
+
+  /* ─── Image placeholders ─── */
+
+  .image-placeholder {
+    @apply bg-gradient-to-br from-amber-100 to-orange-50;
+  }
+}
+
+/* ─── Ken Burns animation for hero images ─── */
+
+@keyframes kenburns {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+  100% {
+    transform: scale(1.08) translate(-1%, -1%);
+  }
+}
+
+/* ─── Reduced motion ─── */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

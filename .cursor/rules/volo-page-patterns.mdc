@@ -1,0 +1,51 @@
+---
+description: Volo page composition patterns — layout rules for landing pages, SKU detail, booking flow, account pages.
+globs: src/app/**/*.tsx
+alwaysApply: false
+---
+
+# Volo Page Patterns
+
+## Landing / Marketing Pages
+
+Structure (top to bottom):
+1. **Hero** — `<Hero>` component with photo, heading, subtitle, CTA
+2. **Value proposition** — NOT 3-4 identical icon columns. Use asymmetric layout, testimonial quotes, or feature+image pairs instead
+3. **Catalog** — SKU cards grid
+4. **Social proof** — reviews, rating summary
+5. **Secondary CTA** — gift certificates, newsletter, etc.
+
+Each section separated by generous spacing (`py-16 sm:py-20 lg:py-24`).
+
+## SKU Detail Page
+
+Two-column layout on desktop:
+- LEFT: gallery, description, includes list, cancellation policy, reviews
+- RIGHT: sticky booking card with `<TrustBar>` beneath CTA buttons
+
+Mobile: single column + fixed bottom bar with price + primary CTA button (Zarezerwuj).
+The mobile bottom bar MUST include the primary action button, not just price display.
+
+## Booking Flow
+
+- `<StepIndicator>` at top with progress bar fill (not just numbered circles)
+- Desktop: form left + sticky `<BookingSummary>` right (large SKU preview image)
+- Mobile: single column, summary collapsed/accordion at bottom, sticky bar with total + "Dalej" or "Zapłać" button
+- Slot selection: `<SlotButton>` components in a grid, not a plain list
+- Guest count: `<GuestStepper>` with buyout card option
+
+## Price Formatting
+
+Always:
+```tsx
+const formatPrice = (amount: number) =>
+  new Intl.NumberFormat('pl-PL').format(amount);
+
+// Display: {formatPrice(899)} <span className="text-sm text-volo-muted">PLN / os.</span>
+```
+
+## Section Spacing
+
+- Between major sections: `py-16 sm:py-20 lg:py-24`
+- Between subsections within a section: `space-y-8` or `space-y-12`
+- Card grid gaps: `gap-6 lg:gap-8`

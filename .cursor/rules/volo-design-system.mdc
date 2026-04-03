@@ -1,0 +1,72 @@
+---
+description: Volo visual design system — colors, typography, hero sections, cards, CTA hierarchy, micro-interactions. Enforced on all files.
+alwaysApply: true
+---
+
+# Volo Design System
+
+## Colors — ONLY volo-* tokens
+
+Never use raw Tailwind colors (red-600, emerald-600, sky-400, zinc-*, etc.) in component or page code.
+Use exclusively:
+
+- `volo-accent` / `volo-accent-hover` / `volo-accent-light` — CTA, active states, highlights
+- `volo-text` / `volo-muted` — primary and secondary text
+- `volo-bg` / `volo-surface` — backgrounds
+- `volo-border` — borders and dividers
+- `volo-success` / `volo-error` — status indicators only
+- `volo-info` — informational accents (links, secondary interactive)
+
+## Typography Scale
+
+| Role | Classes |
+|------|---------|
+| Hero heading | `text-4xl sm:text-5xl lg:text-6xl font-heading font-bold tracking-tight` |
+| Section heading | `text-2xl sm:text-3xl font-heading font-bold` |
+| Card heading | `text-lg font-heading font-semibold` |
+| Body | `text-base leading-relaxed` |
+| Caption / meta | `text-sm text-volo-muted` |
+| Price (large) | `text-2xl font-heading font-bold` with unit in `text-sm text-volo-muted ml-1` |
+| Price (compact) | `text-lg font-heading font-bold` |
+
+Always format prices with `new Intl.NumberFormat('pl-PL').format(amount)` and separate the unit (PLN / os., PLN / przejazd) visually.
+
+## Hero Sections
+
+MANDATORY: background photo with overlay gradient. Never use bare CSS gradients without an image.
+
+```tsx
+<section className="relative min-h-[480px] lg:min-h-[560px] flex items-center">
+  <img src={imageUrl} alt="..." className="absolute inset-0 w-full h-full object-cover" />
+  <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
+  <div className="relative z-10 section-padding container-wide">
+    {/* Light text on dark overlay */}
+  </div>
+</section>
+```
+
+Hero text is always white/light on the photo overlay. CTA button uses `btn-primary`.
+
+## Cards — Three Depth Levels
+
+- `.card` — default: subtle border + shadow-sm (for lists, secondary content)
+- `.card-elevated` — stronger shadow, slight scale on hover (for SKU cards, booking summary)
+- `.card-prominent` — accent border-left or top, heavier shadow (for buyout option, featured items)
+
+## CTA Hierarchy
+
+- ONE `btn-primary` per visible screen area
+- Trust hint near CTA: small text like "Bezpłatna anulacja do 48h" or "Bezpieczna płatność" in `text-sm text-volo-muted` directly below the button
+- Secondary actions use `btn-secondary` or `btn-ghost`
+
+## Micro-interactions
+
+- All transitions: `duration-200 ease-out`
+- Use `motion-safe:` prefix for transforms and opacity animations
+- Hover on cards: `motion-safe:hover:shadow-lg motion-safe:hover:-translate-y-0.5`
+- Step transitions in forms: simple opacity/position, not instant re-render
+- Disabled buttons: `disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none`
+
+## Image Placeholders
+
+When images fail to load, show warm gradient `bg-gradient-to-br from-amber-100 to-orange-50` instead of cold zinc/gray.

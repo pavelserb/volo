@@ -28,8 +28,8 @@ export function Header() {
             <Link href="/krakow/transfers" className="btn-ghost text-sm whitespace-nowrap">
               {t('nav.transfers')}
             </Link>
-            <Link href="/corporate" className="btn-ghost text-sm whitespace-nowrap">
-              {t('nav.corporate')}
+            <Link href="/gift" className="btn-ghost text-sm whitespace-nowrap">
+              {t('nav.giftCards')}
             </Link>
           </nav>
 
@@ -90,11 +90,11 @@ export function Header() {
               {t('nav.transfers')}
             </Link>
             <Link
-              href="/corporate"
+              href="/gift"
               className="btn-ghost text-base justify-start min-h-12 rounded-xl"
               onClick={close}
             >
-              {t('nav.corporate')}
+              {t('nav.giftCards')}
             </Link>
             <hr className="border-volo-border my-2" />
             <div className="flex items-center gap-2 py-2">

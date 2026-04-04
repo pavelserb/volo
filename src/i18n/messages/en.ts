@@ -8,6 +8,7 @@ export const en = {
   nav: {
     helicopters: 'Helicopter flights',
     transfers: 'VIP transfers',
+    giftCards: 'Gift cards',
     corporate: 'For business',
     account: 'My account',
     city: 'City',

@@ -8,6 +8,7 @@ export const pl = {
   nav: {
     helicopters: 'Loty helikopterem',
     transfers: 'Transfery VIP',
+    giftCards: 'Karty podarunkowe',
     corporate: 'Dla firm',
     account: 'Moje konto',
     city: 'Miasto',
